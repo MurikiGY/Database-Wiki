@@ -50,7 +50,7 @@ TO new_column_name;
 ```
 ALTER TABLE <table>
 ALTER COLUMN <column>
-[SET DEFAULT <value> | DROP DEFAULT];
+TYPE <data_type>;
 ```
 
 - Referenciar chave primaria
