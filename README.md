@@ -1,6 +1,13 @@
 # SQL-wiki
 Lista de comandos sql para postgresql.
 
+# Transações
+```
+BEGIN       //inicia uma transação
+COMMIT      //registra as alterações realizadas
+ROLLBACK    //descarta transação
+```
+
 # Criação de tabelas
 
 - Tabelas normais
