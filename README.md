@@ -15,3 +15,16 @@ CREATE TABLE <table> (
 
 # Modificar tabelas
 
+- Adicionar coluna
+```
+ALTER TABLE <Table>
+ADD <column> datatype;
+```
+
+- Remover coluna
+```
+ALTER TABLE <Table>
+DROP COLUMN <column>;
+```
+
+
