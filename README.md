@@ -60,7 +60,12 @@ FOREIGN KEY (<fk_columns>)
 REFERENCES <parent_table> (<parent_key_columns>);
 ```
 
-- Deletar tuplas
+- Inserir dados
+```
+INSER INTO <table> VALUES (<data1, data2, data3>);
+```
+
+- Deletar dados
 ```
 DELETE FROM <Table> where <attribute>=<value>;
 ```
