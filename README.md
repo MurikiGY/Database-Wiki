@@ -64,3 +64,15 @@ REFERENCES <parent_table> (<parent_key_columns>);
 ```
 DELETE FROM <Table> where <attribute>=<value>;
 ```
+
+# Importação/Exportação de tabelas em csv
+
+- Importar
+```
+\copy <table(columns_a, column_b)> from '/path' delimiter ';' csv;
+```
+
+- Exportar
+```
+\copy (<query>) to '/path/file.csv' delimiter ';' csv;
+```
