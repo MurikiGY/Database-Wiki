@@ -1,4 +1,5 @@
 # SQL-wiki
+Lista de comandos sql para postgresql.
 
 # Criação de tabelas
 
@@ -67,31 +68,31 @@ INSER INTO <table> VALUES (<data1, data2, data3>);
 
 - Deletar dados
 ```
-DELETE FROM <Table> where <attribute>=<value>;
+DELETE FROM <Table> WHERE <attribute>=<value>;
 ```
 
 # Importação/Exportação de tabelas em csv
 
 - Importar
 ```
-\copy <table(columns_a, column_b)> from '/path' delimiter ';' csv;
+\COPY <table(columns_a, column_b)> FROM '/path' DELIMITER ';' CSV;
 ```
 
 - Exportar
 ```
-\copy (<query>) to '/path/file.csv' delimiter ';' csv;
+\COPY (<query>) TO '/path/file.csv' DELIMITER ';' CSV;
 ```
 
 # Consulta de dados
 
 - Consulta simples
 ```
-select <column_name> from <table>
+SELECT <column_name> FROM <table>
 ```
 - Complementares de consulta
 ```
-where <condiction> //retorna dadosa com base na condição passada
-oder by <column_name> [DESC | ASC] //retorna dados ordenados em DESC ou ASC
+WHERE <condiction> //retorna dadosa com base na condição passada
+ORDER BY <column_name> [DESC | ASC] //retorna dados ordenados em DESC ou ASC
 
 ```
 
