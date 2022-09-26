@@ -24,7 +24,7 @@ CREATE TABLE <table> (
 ```
 
 
-# Modificar tabelas
+# Alteração de tabelas
 
 - Adicionar coluna
 ```
@@ -76,3 +76,18 @@ DELETE FROM <Table> where <attribute>=<value>;
 ```
 \copy (<query>) to '/path/file.csv' delimiter ';' csv;
 ```
+
+# Consulta de dados
+
+- Consulta simples
+```
+select <column_name> from <table>
+```
+- Complementares de consulta
+```
+where <condiction> //retorna dadosa com base na condição passada
+oder by <column_name> [DESC | ASC] //retorna dados ordenados em DESC ou ASC
+
+```
+
+
