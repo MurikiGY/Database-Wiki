@@ -93,18 +93,6 @@ INSER INTO <table> VALUES (<data1, data2, data3>);
 DELETE FROM <table> WHERE <attribute>=<value>;
 ```
 
-# Importação/Exportação de tabelas em csv
-
-- Importar
-```
-\COPY <table(columns_a, column_b)> FROM '/path' DELIMITER ';' CSV;
-```
-
-- Exportar
-```
-\COPY (<query>) TO '/path/file.csv' DELIMITER ';' CSV;
-```
-
 # Consulta de dados
 
 - Consulta simples
@@ -112,11 +100,11 @@ DELETE FROM <table> WHERE <attribute>=<value>;
 SELECT <column_name1>, <column_name2>  FROM <table>  //retorna todos os dados das colunas <column_name1> e <column_name2>
 SELECT *  FROM <table>                               //retorna todos os dados da tabela
 ```
+
 - Complementares de consulta
 ```
 WHERE <condiction>                   //retorna dados com base na condição passada
 ORDER BY <column_name> [DESC | ASC]  //retorna dados ordenados em DESC ou ASC com base na codificação ascii
-
 ```
 
 # Junção de tabelas
@@ -132,3 +120,17 @@ SELECT <select_list> FROM <table1> tb_1 INNER JOIN <table2> tb_2 on tb_1.key = t
 ```
 SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb_2.key
 ```
+
+# Importação/Exportação de tabelas em csv
+
+- Importar
+```
+\COPY <table(columns_a, column_b)> FROM '/path' DELIMITER ';' CSV;
+```
+
+- Exportar
+```
+\COPY (<query>) TO '/path/file.csv' DELIMITER ';' CSV;
+```
+
+# Backup por dump
