@@ -1,6 +1,15 @@
 # SQL-wiki
 Lista de comandos sql para postgresql.
 
+# Acesso ao banco
+- Postgresql
+```
+sudo -i -u postgres         //alternar para o usuario postgres
+psql                        //acessar o prompt do banco
+sudo -u postgres psql       //acessar um prompt sem alternar de conta
+psql -h <host> -U <user>    //conexão via ssh
+```
+
 # Alias de Tabelas
 Quando colocado em frente a uma tabela uma string que não seja uma palavra reservada, será tratado como um nome alternativo para a tabela.
 Imagine uma tabela <tableA> que possui um contador de id <tableA>.tableA_id.
