@@ -47,6 +47,13 @@ CREATE TABLE <table> (
 //Além das colunas herdadas, será adicionado a coluna <attribute_name>
 ```
 
+- Copia de tabelas
+```
+select *
+into <new_table_name>
+from <table_to_be_copied>;
+```
+
 # Alteração de tabelas
 
 - Adicionar coluna
