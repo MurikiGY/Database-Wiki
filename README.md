@@ -1,11 +1,18 @@
 # SQL-wiki
 Lista de comandos sql para postgresql.
 
+# Alias de Tabelas
+Quando colocado em frente a uma tabela uma string que não seja uma palavra reservada, será tratado como um nome alternativo para a tabela.
+Imagine uma tabela <tableA> que possui um contador de id <tableA>.tableA_id.
+```
+SELECT * FROM <tableA> tb_a where tb_a.tableA_id > 50;
+```
+
 # Transações
 ```
-BEGIN       //inicia uma transação
-COMMIT      //registra as alterações realizadas
-ROLLBACK    //descarta transação
+BEGIN;       //inicia uma transação
+COMMIT;      //registra as alterações realizadas
+ROLLBACK;    //descarta transação
 ```
 
 # Criação de tabelas
@@ -31,7 +38,6 @@ CREATE TABLE <table> (
 //Além das colunas herdadas, será adicionado a coluna <attribute_name>
 ```
 
-
 # Alteração de tabelas
 
 - Adicionar coluna
@@ -49,8 +55,8 @@ DROP COLUMN <column>;
 - Renomear colunas
 ```
 ALTER TABLE <table>
-RENAME COLUMN column_name
-TO new_column_name;
+RENAME COLUMN <column_name>
+TO <new_column_name>;
 ```
 
 - Alterar tipo
@@ -75,7 +81,7 @@ INSER INTO <table> VALUES (<data1, data2, data3>);
 
 - Deletar dados
 ```
-DELETE FROM <Table> WHERE <attribute>=<value>;
+DELETE FROM <table> WHERE <attribute>=<value>;
 ```
 
 # Importação/Exportação de tabelas em csv
@@ -94,13 +100,26 @@ DELETE FROM <Table> WHERE <attribute>=<value>;
 
 - Consulta simples
 ```
-SELECT <column_name> FROM <table>
+SELECT <column_name1>, <column_name2>  FROM <table>  //retorna todos os dados das colunas <column_name1> e <column_name2>
+SELECT *  FROM <table>                               //retorna todos os dados da tabela
 ```
 - Complementares de consulta
 ```
-WHERE <condiction> //retorna dadosa com base na condição passada
-ORDER BY <column_name> [DESC | ASC] //retorna dados ordenados em DESC ou ASC
+WHERE <condiction>                   //retorna dados com base na condição passada
+ORDER BY <column_name> [DESC | ASC]  //retorna dados ordenados em DESC ou ASC com base na codificação ascii
 
 ```
 
+# Junção de tabelas
+Existem várias formas de juntar duas tabelas, abaixo as duas mais comuns:
 
+- Inner join
+```
+//tb_1.key e tb_2.key são as chaves primarias de cada tabela
+SELECT <select_list> FROM <table1> tb_1 INNER JOIN <table2> tb_2 on tb_1.key = tb_2.key
+```
+
+- Left Join
+```
+SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb_2.key
+```
