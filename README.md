@@ -82,6 +82,12 @@ ALTER COLUMN <column>
 TYPE <data_type>;
 ```
 
+- Permitir/Bloquear valores nulos
+```
+ALTER TABLE <table> ALTER COLUMN <column_name> SET NOT NULL;
+ALTER TABLE <tbale> ALTER COLUMN <column_name> DROP NOT NULL;
+```
+
 - Referenciar chave primaria
 ```
 ALTER TABLE <Child_table>
