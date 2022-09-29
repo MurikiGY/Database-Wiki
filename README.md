@@ -1,13 +1,13 @@
 # SQL-wiki
 Lista de comandos sql para postgresql.
 
-- [Acesso ao banco](#acessoaobanco)
-- [Alias de tabelas](#aliasdetabelas)
+- [Acesso ao banco](#acesso ao banco)
+- [Alias de tabelas](#alias de tabelas)
 - [Transações](#transações)
-- [Criação de Tabelas](#criaçãodetabelas)
-- [Alteração de Tabelas](#alteraçãodetabelas)
-- [Consulta de Dados](#consultadedados)
-- [Junção de Tabelas](#junçãodetabelas)
+- [Criação de Tabelas](#criação de tabelas)
+- [Alteração de Tabelas](#alteração de tabelas)
+- [Consulta de Dados](#consulta de dados)
+- [Junção de Tabelas](#junção de tabelas)
 - [Importação/Exportaçaão em csv](#importação/exportaçãodetabelasemcsv)
 - [Backup por Dump](#backuppordump)
 
