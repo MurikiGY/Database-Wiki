@@ -1,8 +1,12 @@
 # SQL-wiki
 Lista de comandos sql para postgresql.
 
-# Acesso ao banco
-- Postgresql
+- [Acesso ao banco](#acessoaobanco)
+- [Alias de tabelas](#aliasdetabelas)
+- [Transações](#transações)
+
+## Acesso ao banco
+### Postgresql
 ```
 sudo -i -u postgres         //alternar para o usuario postgres
 psql                        //acessar o prompt do banco
@@ -10,23 +14,29 @@ sudo -u postgres psql       //acessar um prompt sem alternar de conta
 psql -h <host> -U <user>    //conexão via ssh
 ```
 
-# Alias de Tabelas
+
+
+## Alias de Tabelas
 Quando colocado em frente a uma tabela uma string que não seja uma palavra reservada, será tratado como um nome alternativo para a tabela.
 Imagine uma tabela <tableA> que possui um contador de id <tableA>.tableA_id.
 ```
 SELECT * FROM <tableA> tb_a where tb_a.tableA_id > 50;
 ```
 
-# Transações
+
+
+## Transações
 ```
 BEGIN;       //inicia uma transação
 COMMIT;      //registra as alterações realizadas
 ROLLBACK;    //descarta transação
 ```
 
-# Criação de tabelas
 
-- Tabelas normais
+
+## Criação de tabelas
+
+### Tabelas normais
 ```
 CREATE TABLE <table> (
    <table_id>          serial          PRIMARY KEY,
@@ -39,7 +49,7 @@ CREATE TABLE <table> (
 );
 ```
 
-- Tabelas herdadas
+### Tabelas herdadas
 ```
 CREATE TABLE <table> (
    <attribute_name>    <data_type>;
@@ -47,48 +57,50 @@ CREATE TABLE <table> (
 //Além das colunas herdadas, será adicionado a coluna <attribute_name>
 ```
 
-- Copia de tabelas
+### Copia de tabelas
 ```
 select *
 into <new_table_name>
 from <table_to_be_copied>;
 ```
 
-# Alteração de tabelas
 
-- Adicionar coluna
+
+## Alteração de tabelas
+
+### Adicionar coluna
 ```
 ALTER TABLE <table>
 ADD <column> datatype;
 ```
 
-- Remover coluna
+### Remover coluna
 ```
 ALTER TABLE <table>
 DROP COLUMN <column>;
 ```
 
-- Renomear colunas
+### Renomear colunas
 ```
 ALTER TABLE <table>
 RENAME COLUMN <column_name>
 TO <new_column_name>;
 ```
 
-- Alterar tipo
+### Alterar tipo
 ```
 ALTER TABLE <table>
 ALTER COLUMN <column>
 TYPE <data_type>;
 ```
 
-- Permitir/Bloquear valores nulos
+### Permitir/Bloquear valores nulos
 ```
 ALTER TABLE <table> ALTER COLUMN <column_name> SET NOT NULL;
 ALTER TABLE <tbale> ALTER COLUMN <column_name> DROP NOT NULL;
 ```
 
-- Referenciar chave primaria
+### Referenciar chave primaria
 ```
 ALTER TABLE <Child_table>
 ADD CONSTRAINT <constraint_name>
@@ -96,54 +108,62 @@ FOREIGN KEY (<fk_columns>)
 REFERENCES <parent_table> (<parent_key_columns>);
 ```
 
-- Inserir dados
+### Inserir dados
 ```
 INSER INTO <table> VALUES (<data1, data2, data3>);
 ```
 
-- Deletar dados
+### Deletar dados
 ```
 DELETE FROM <table> WHERE <attribute>=<value>;
 ```
 
-# Consulta de dados
 
-- Consulta simples
+
+## Consulta de dados
+
+### Consulta simples
 ```
 SELECT <column_name1>, <column_name2>  FROM <table>  //retorna todos os dados das colunas <column_name1> e <column_name2>
 SELECT *  FROM <table>                               //retorna todos os dados da tabela
 ```
 
-- Complementares de consulta
+### Complementares de consulta
 ```
 WHERE <condiction>                   //retorna dados com base na condição passada
 ORDER BY <column_name> [DESC | ASC]  //retorna dados ordenados em DESC ou ASC com base na codificação ascii
 ```
 
-# Junção de tabelas
+
+
+## Junção de tabelas
 Existem várias formas de juntar duas tabelas, abaixo as duas mais comuns:
 
-- Inner join
+### Inner join
 ```
 //tb_1.key e tb_2.key são as chaves primarias de cada tabela
-SELECT <select_list> FROM <table1> tb_1 INNER JOIN <table2> tb_2 on tb_1.key = tb_2.key
+SELECT <select_list> FROM <table1> tb_1 INNER JOIN <table2> tb_2 on tb_1.key = tb_2.key;
 ```
 
-- Left Join
+### Left Join
 ```
-SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb_2.key
+SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb_2.key;
 ```
 
-# Importação/Exportação de tabelas em csv
 
-- Importar
+
+## Importação/Exportação de tabelas em csv
+
+### Importar
 ```
 \COPY <table(columns_a, column_b)> FROM '/path' DELIMITER ';' CSV;
 ```
 
-- Exportar
+### Exportar
 ```
 \COPY (<query>) TO '/path/file.csv' DELIMITER ';' CSV;
 ```
 
-# Backup por dump
+
+
+## Backup por dump
