@@ -7,7 +7,7 @@ Lista de comandos sql para postgresql.
 - [Criação de Tabelas](#criação-de-tabelas)
 - [Alteração de Tabelas](#alteração-de-tabelas)
 - [Consulta de Dados](#consulta-de-dados)
-- [Junção de Tabelas](#junção-de-tabelas)
+- [Junção de Tabelas](#Junção-de-tabelas)
 - [Importação/Exportação em csv](#importaçãoexportação-de-tabelas-em-csv)
 - [Backup por Dump](#backup-por-dump)
 
