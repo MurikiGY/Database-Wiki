@@ -131,14 +131,23 @@ DELETE FROM <table> WHERE <attribute>=<value>;
 
 ### Consulta simples
 ```
-SELECT <column_name1>, <column_name2>  FROM <table>  //retorna todos os dados das colunas <column_name1> e <column_name2>
-SELECT *  FROM <table>                               //retorna todos os dados da tabela
+SELECT <column_name1>, <column_name2>  FROM <table>;  //retorna todos os dados das colunas <column_name1> e <column_name2>
+SELECT *  FROM <table>;                               //retorna todos os dados da tabela
 ```
 
-### Complementares de consulta
+### Consulta com parametros
 ```
-WHERE <condiction>                   //retorna dados com base na condição passada
-ORDER BY <column_name> [DESC | ASC]  //retorna dados ordenados em DESC ou ASC com base na codificação ascii
+...WHERE <condiction>...;                //retorna dados com base na condição passada
+...ORDER BY <column_name> [DESC | ASC];  //retorna dados ordenados em DESC ou ASC
+...DISTINCT <column_name>...;            //retorna dados sem repetições
+```
+
+### Consulta de repetições
+```
+SELECT <column_name>
+FROM <table>
+GROUP BY <column_name>
+HAVING COUNT (<column_name) > 1;
 ```
 
 
