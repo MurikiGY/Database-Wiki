@@ -115,6 +115,11 @@ FOREIGN KEY (<fk_columns>)
 REFERENCES <parent_table> (<parent_key_columns>);
 ```
 
+### Alterar strings para lowercase
+```
+UPDATE <table> SET <column_name> = lower(<column_name>);
+```
+
 ### Inserir dados
 ```
 INSER INTO <table> VALUES (<data1, data2, data3>);
