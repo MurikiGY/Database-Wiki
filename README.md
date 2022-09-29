@@ -24,7 +24,7 @@ psql -h <host> -U <user>    //conexão via ssh
 
 ## Alias de Tabelas
 Quando colocado em frente a uma tabela uma string que não seja uma palavra reservada, será tratado como um nome alternativo para a tabela.
-Imagine uma tabela <tableA> que possui um contador de id <tableA>.tableA_id.
+Imagine uma tabela \<tableA\> que possui um contador de id \<tableA\>.tableA_id.
 ```
 SELECT * FROM <tableA> tb_a where tb_a.tableA_id > 50;
 ```
@@ -32,6 +32,7 @@ SELECT * FROM <tableA> tb_a where tb_a.tableA_id > 50;
 
 
 ## Transações
+Uma transação representa uma unidade de trabalho executada dentro de um sistema de gerenciamento de banco de dados, sobre um banco de dados, e tratada de maneira coerente e confiável, independente de outras transações. Uma transação geralmente representa qualquer alteração em um banco de dados.
 ```
 BEGIN;       //inicia uma transação
 COMMIT;      //registra as alterações realizadas
