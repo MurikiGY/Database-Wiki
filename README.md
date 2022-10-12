@@ -10,6 +10,7 @@ Lista de comandos sql para postgresql.
 - [Junção de Tabelas](#Junção-de-tabelas)
 - [Importação/Exportação em csv](#importaçãoexportação-de-tabelas-em-csv)
 - [Backup por Dump](#backup-por-dump)
+- [Tamanho do Banco](#tamanho-do-banco)
 
 ## Acesso ao banco
 ### Postgresql
@@ -188,3 +189,11 @@ SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb
 
 
 ## Backup por dump
+
+
+## Tamanho do Banco
+
+### Postrgresql
+```
+SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS size FROM pg_database;
+```
