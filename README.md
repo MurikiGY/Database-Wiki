@@ -131,6 +131,11 @@ INSER INTO <table> VALUES (<data1, data2, data3>);
 DELETE FROM <table> WHERE <attribute>=<value>;
 ```
 
+### Alterar horarios
+```
+UPDATE <table> set <column> = <column> +-  interval ' <interval> '
+```
+
 
 
 ## Consulta de dados
