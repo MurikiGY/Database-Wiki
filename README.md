@@ -197,3 +197,7 @@ SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb
 ```
 SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS size FROM pg_database;
 ```
+
+
+## Bibliografia
+- https://database.guide/add-hours-to-a-time-value-in-postgresql/
