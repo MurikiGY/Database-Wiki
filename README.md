@@ -11,6 +11,7 @@ Lista de comandos sql para postgresql.
 - [Importação/Exportação em csv](#importaçãoexportação-de-tabelas-em-csv)
 - [Backup por Dump](#backup-por-dump)
 - [Tamanho do Banco](#tamanho-do-banco)
+- [Cluster em disco externo](#Cluster-em-disco-externo)
 
 ## Acesso ao banco
 ### Postgresql
@@ -202,6 +203,19 @@ SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb
 ```
 SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS size FROM pg_database;
 ```
+
+## Cluster em disco externo
+
+### Montagem de um disco externo
+Ao ser conectado um disco ao computador é preciso montá-lo em um diretório do sistema de arquivos.
+Considerando a situação onde há um ssd com o sistema operacional instalado e um HD com uma partição única configurada e devidamente formatada, verifique com o comando `lsblk` o esquema de partições.
+Sendo /dev/sda o ssd onde há o sistema operacional e /dev/sdb o disco externo (sendo /dev/sdb1 a partição) é possível montar em um diretório o disco com o comando `mount <partição> <diretório>`.
+Caso se deseje montar um.
+
+
+
+
+
 
 
 ## Bibliografia
