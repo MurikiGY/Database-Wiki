@@ -213,20 +213,19 @@ Sendo /dev/sda o ssd onde há o sistema operacional e /dev/sdb o disco externo (
 Caso se deseje montar o disco na inicialização do computador é possível alterar o arquivo `/etc/fstab`.
 
 Exemplo da montagem da partição /dev/sdb1 no diretório /HDD/space1
-
 ```
 # Static information about the filesystems.
 # See fstab(5) for details.
 
 # <file system> <dir> <type> <options> <dump> <pass>
 # /dev/sda2
-UUID=7ca3dc8a-f22e-448f-9df1-c41bed82999e	    /         	  ext4      	rw,relatime	 0 1
+UUID=<some_numbers>	    /         	  ext4      	rw,relatime	 0 1
 
 # /dev/sda3
-UUID=00e0fcd9-0029-4d41-b5fe-84524e9446e8	    /home     	  ext4      	rw,relatime	 0 2
+UUID=<some_numbers>	    /home     	  ext4      	rw,relatime	 0 2
 
 # /dev/sda1
-UUID=ff7d42b7-0ce5-4d9a-9db4-65fc95171b4a	     none      	swap      	 defaults  	  0 0
+UUID=<some_numbers>	     none      	swap      	 defaults  	  0 0
 
 # Adicione aqui a montagem de novas partições
 # /dev/sdb1
@@ -234,10 +233,22 @@ UUID=ff7d42b7-0ce5-4d9a-9db4-65fc95171b4a	     none      	swap      	 defaults  
 ```
 
 ### Criação e inicialização do cluster do postgres
+Para trabalhar com o postgres em um disco externo, primeiramente garanta que não há outro cluster do postgres rodando junto: `systemctl status postgresql.service`.
 
+Mude para o usuário postgres: `su postgres`.\
+Crie um diretório onde será armazenado o cluster: `mkdir /HDD/space1/postgres/`.\
+Crie o cluster: `initdb -D /HDD/space1/postgres/`.\
+Inicie o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog start`.
 
+Caso ocorra algum erro, verifique o arquivo de log `arquivolog` gerado.
 
+Possívelmente ocorrerão erros como:
+```
+FATAL:  could not create lock file "/run/postgresql/.s.PGSQL.5432.lock": Arquivo ou diretório inexistente
+```
+Para casos assim, verifique se o diretório `/run/postgresql/` existe e pertence ao usuário postgres.
 
+Por fim, acesse o cluster com `psql` e verifique o local dos dados com `SHOW data_directory`.
 
 
 ## Bibliografia
