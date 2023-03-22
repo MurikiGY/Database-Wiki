@@ -210,7 +210,7 @@ SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)
 Ao ser conectado um disco ao computador é preciso montá-lo em um diretório do sistema de arquivos.
 Considerando a situação onde há um ssd com o sistema operacional instalado e um HD com uma partição única configurada e devidamente formatada, verifique com o comando `lsblk` o esquema de partições.\
 Sendo /dev/sda o ssd onde há o sistema operacional e /dev/sdb o disco externo (sendo /dev/sdb1 a partição) é possível montar em um diretório o disco com o comando `mount <partição> <diretório>`.\
-Caso se deseje montar o disco na inicialização do computador é possível alterar o arquivo `/etc/fstab`.\
+Caso se deseje montar o disco na inicialização do computador é possível alterar o arquivo `/etc/fstab`.
 
 Exemplo da montagem da partição /dev/sdb1 no diretório /HDD/space1
 
@@ -233,7 +233,7 @@ UUID=ff7d42b7-0ce5-4d9a-9db4-65fc95171b4a	     none      	swap      	 defaults  
 /dev/sdb1					                      /HDD/space1  ext4		   defaults	    0 3
 ```
 
-###Criação e inicialização do cluster do postgres
+### Criação e inicialização do cluster do postgres
 
 
 
