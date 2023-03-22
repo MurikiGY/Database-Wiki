@@ -213,6 +213,7 @@ Sendo /dev/sda o ssd onde há o sistema operacional e /dev/sdb o disco externo (
 Caso se deseje montar o disco na inicialização do computador é possível alterar o arquivo `/etc/fstab`.\
 
 Exemplo da montagem da partição /dev/sdb1 no diretório /HDD/space1
+
 ```
 # Static information about the filesystems.
 # See fstab(5) for details.
@@ -231,6 +232,8 @@ UUID=ff7d42b7-0ce5-4d9a-9db4-65fc95171b4a	     none      	swap      	 defaults  
 # /dev/sdb1
 /dev/sdb1					                      /HDD/space1  ext4		   defaults	    0 3
 ```
+
+###Criação e inicialização do cluster do postgres
 
 
 
