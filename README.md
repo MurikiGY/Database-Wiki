@@ -208,8 +208,8 @@ SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)
 
 ### Montagem de um disco externo
 Ao ser conectado um disco ao computador é preciso montá-lo em um diretório do sistema de arquivos.
-Considerando a situação onde há um ssd com o sistema operacional instalado e um HD com uma partição única configurada e devidamente formatada, verifique com o comando `lsblk` o esquema de partições.
-Sendo /dev/sda o ssd onde há o sistema operacional e /dev/sdb o disco externo (sendo /dev/sdb1 a partição) é possível montar em um diretório o disco com o comando `mount <partição> <diretório>`.
+Considerando a situação onde há um ssd com o sistema operacional instalado e um HD com uma partição única configurada e devidamente formatada, verifique com o comando `lsblk` o esquema de partições.\
+Sendo /dev/sda o ssd onde há o sistema operacional e /dev/sdb o disco externo (sendo /dev/sdb1 a partição) é possível montar em um diretório o disco com o comando `mount <partição> <diretório>`.\
 Caso se deseje montar um.
 
 
