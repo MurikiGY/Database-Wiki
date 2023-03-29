@@ -27,7 +27,7 @@ psql -h <host> -U <user>    //conexão via ssh
 ## Alias de Tabelas
 Quando colocado em frente a uma tabela uma string que não seja uma palavra reservada, será tratado como um nome alternativo para a tabela.
 Imagine uma tabela \<tableA\> que possui um contador de id \<tableA\>.tableA_id.
-```
+``` sql
 SELECT * FROM <tableA> tb_a where tb_a.tableA_id > 50;
 ```
 
@@ -46,7 +46,7 @@ ROLLBACK;    //descarta transação
 ## Criação de tabelas
 
 ### Tabelas normais
-```
+``` sql
 CREATE TABLE <table> (
    <table_id>          serial          PRIMARY KEY,
    <attribute_int>     integer         NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE <table> (
 ```
 
 ### Tabelas herdadas
-```
+``` sql
 CREATE TABLE <table> (
    <attribute_name>    <data_type>;
 ) INHERITS (parent_table);
