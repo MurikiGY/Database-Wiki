@@ -200,8 +200,15 @@ SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb
 ## Tamanho do Banco
 
 ### Postrgresql
+Listar tamanho dos bancos do cluster
 ```
 SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS size FROM pg_database;
+```
+Listar o tamanho das tabelas de um banco
+```
+# Acesse o banco
+\c <database_name>
+\d+
 ```
 
 ## Cluster em disco externo postgres
