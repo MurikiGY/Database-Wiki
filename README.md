@@ -35,7 +35,7 @@ SELECT * FROM <tableA> tb_a where tb_a.tableA_id > 50;
 
 ## Transações
 Uma transação representa uma unidade de trabalho executada dentro de um sistema de gerenciamento de banco de dados, sobre um banco de dados, e tratada de maneira coerente e confiável, independente de outras transações. Uma transação geralmente representa qualquer alteração em um banco de dados.
-```
+``` sql
 BEGIN;       //inicia uma transação
 COMMIT;      //registra as alterações realizadas
 ROLLBACK;    //descarta transação
@@ -67,7 +67,7 @@ CREATE TABLE <table> (
 ```
 
 ### Copia de tabelas
-```
+``` sql
 select *
 into <new_table_name>
 from <table_to_be_copied>;
@@ -78,39 +78,39 @@ from <table_to_be_copied>;
 ## Alteração de tabelas
 
 ### Adicionar coluna
-```
+``` sql
 ALTER TABLE <table>
 ADD <column> datatype;
 ```
 
 ### Remover coluna
-```
+``` sql
 ALTER TABLE <table>
 DROP COLUMN <column>;
 ```
 
 ### Renomear colunas
-```
+``` sql
 ALTER TABLE <table>
 RENAME COLUMN <column_name>
 TO <new_column_name>;
 ```
 
 ### Alterar tipo
-```
+``` sql
 ALTER TABLE <table>
 ALTER COLUMN <column>
 TYPE <data_type>;
 ```
 
 ### Permitir/Bloquear valores nulos
-```
+``` sql
 ALTER TABLE <table> ALTER COLUMN <column_name> SET NOT NULL;
 ALTER TABLE <tbale> ALTER COLUMN <column_name> DROP NOT NULL;
 ```
 
 ### Referenciar chave primaria
-```
+``` sql
 ALTER TABLE <Child_table>
 ADD CONSTRAINT <constraint_name>
 FOREIGN KEY (<fk_columns>)
@@ -118,22 +118,22 @@ REFERENCES <parent_table> (<parent_key_columns>);
 ```
 
 ### Alterar strings para lowercase
-```
+``` sql
 UPDATE <table> SET <column_name> = lower(<column_name>);
 ```
 
 ### Inserir dados
-```
+``` sql
 INSER INTO <table> VALUES (<data1, data2, data3>);
 ```
 
 ### Deletar dados
-```
+``` sql
 DELETE FROM <table> WHERE <attribute>=<value>;
 ```
 
 ### Alterar horarios
-```
+``` sql
 UPDATE <table> set <column> = <column> +-  interval ' <interval> '
 ```
 
@@ -142,20 +142,20 @@ UPDATE <table> set <column> = <column> +-  interval ' <interval> '
 ## Consulta de dados
 
 ### Consulta simples
-```
+``` sql
 SELECT <column_name1>, <column_name2>  FROM <table>;  //retorna todos os dados das colunas <column_name1> e <column_name2>
 SELECT *  FROM <table>;                               //retorna todos os dados da tabela
 ```
 
 ### Consulta com parametros
-```
+``` sql
 ...WHERE <condiction>...;                //retorna dados com base na condição passada
 ...ORDER BY <column_name> [DESC | ASC];  //retorna dados ordenados em DESC ou ASC
 ...DISTINCT <column_name>...;            //retorna dados sem repetições
 ```
 
 ### Consulta de repetições
-```
+``` sql
 SELECT <column_name>
 FROM <table>
 GROUP BY <column_name>
@@ -168,13 +168,13 @@ HAVING COUNT (<column_name) > 1;
 Existem várias formas de juntar duas tabelas, abaixo as duas mais comuns:
 
 ### Inner join
-```
+``` sql
 //tb_1.key e tb_2.key são as chaves primarias de cada tabela
 SELECT <select_list> FROM <table1> tb_1 INNER JOIN <table2> tb_2 on tb_1.key = tb_2.key;
 ```
 
 ### Left Join
-```
+``` sql
 SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb_2.key;
 ```
 
@@ -183,12 +183,12 @@ SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb
 ## Importação/Exportação de tabelas em csv
 
 ### Importar
-```
+``` sql
 \COPY <table(columns_a, column_b)> FROM '/path' DELIMITER ';' CSV;
 ```
 
 ### Exportar
-```
+``` sql
 \COPY (<query>) TO '/path/file.csv' DELIMITER ';' CSV;
 ```
 
@@ -201,11 +201,11 @@ SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb
 
 ### Postrgresql
 Listar tamanho dos bancos do cluster
-```
+``` sql
 SELECT pg_database.datname, pg_size_pretty(pg_database_size(pg_database.datname)) AS size FROM pg_database;
 ```
 Listar o tamanho das tabelas de um banco
-```
+``` sql
 # Acesse o banco
 \c <database_name>
 \d+
