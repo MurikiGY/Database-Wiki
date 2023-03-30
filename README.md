@@ -240,7 +240,7 @@ UUID=<some_numbers>	     none      	swap      	 defaults  	  0 0
 ```
 
 ### Criação e inicialização do cluster do postgres
-Para trabalhar com o postgres em um disco externo, primeiramente garanta que não há outro cluster do postgres rodando junto: `systemctl status postgresql.service`.
+Para trabalhar com o postgres em um disco externo, primeiramente garanta que NÂO há outro cluster do postgres rodando junto: `systemctl status postgresql.service`.
 
 Mude para o usuário postgres: `su postgres`.\
 Crie um diretório onde será armazenado o cluster: `mkdir /HDD/space1/postgres/`.\
@@ -256,6 +256,8 @@ FATAL:  could not create lock file "/run/postgresql/.s.PGSQL.5432.lock": Arquivo
 Para casos assim, verifique se o diretório `/run/postgresql/` existe e pertence ao usuário postgres.
 
 Por fim, acesse o cluster com `psql` e verifique o local dos dados com `SHOW data_directory`.
+
+Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog restart`
 
 
 ## Bibliografia
