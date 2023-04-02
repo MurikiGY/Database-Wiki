@@ -1,5 +1,5 @@
-# SQL-wiki
-Lista de comandos sql para postgresql.
+# DATABASE-wiki
+Lista de funcionalidades de um SGDB. (postgres em sua maioria)
 
 - [Acesso ao banco](#acesso-ao-banco)
 - [Alias de tabelas](#alias-de-tabelas)
