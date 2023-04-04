@@ -43,6 +43,7 @@ WHERE tab.table_schema = '"'public'"'
 ORDER BY pg_relation_size(quote_ident(tab.table_name)) desc, aux.column_count desc, aux2.rows_count desc;'
 
 # If count rows doesn't work and if your database isn't too large:
+#echo "Tables rows
 #WITH tbl AS
 #  (SELECT table_schema,
 #          TABLE_NAME
