@@ -1,6 +1,7 @@
 # DATABASE-wiki
 Lista de funcionalidades de um SGDB. (postgres em sua maioria)
 
+- [Normalização](#normalização-de-tabelas)
 - [Acesso ao banco](#acesso-ao-banco)
 - [Alias de tabelas](#alias-de-tabelas)
 - [Transações](#transações)
@@ -12,6 +13,16 @@ Lista de funcionalidades de um SGDB. (postgres em sua maioria)
 - [Backup por Dump](#backup-por-dump)
 - [Tamanho do Banco](#tamanho-do-banco)
 - [Cluster em disco externo](#Cluster-em-disco-externo-postgres)
+
+## Normalização de tabelas
+### Primeira forma normal
+
+### Segunda forma normal
+
+### Terceira forma normal
+
+### Forma normal Boyce-Codd
+
 
 ## Acesso ao banco
 ### Postgresql
