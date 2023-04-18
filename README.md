@@ -14,6 +14,9 @@ Lista de funcionalidades de um SGDB. (postgres em sua maioria)
 - [Tamanho do Banco](#tamanho-do-banco)
 - [Cluster em disco externo](#Cluster-em-disco-externo-postgres)
 
+## Dependencias funcionais
+
+
 ## Normalização de tabelas
 ### Primeira forma normal
 
