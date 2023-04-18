@@ -14,7 +14,13 @@ Lista de funcionalidades de um SGDB. (postgres em sua maioria)
 - [Tamanho do Banco](#tamanho-do-banco)
 - [Cluster em disco externo](#Cluster-em-disco-externo-postgres)
 
-## Dependencias funcionais
+## Dependencias funcionais]
+Uma dependência funcional (DF) é um tipo de restrição de integridade que generaliza o conceito de chave.
+Seja R um esquema de relação e X e Y conjuntos não-vazios de atributos em R.
+Dizemos que uma instância r de R satisfaz a DF X -> Y se o seguinte vale para todo par
+de tuplas t1 e t2 em r:
+
+- Se t 1 . X = t 2 . X, então t 1 . Y = t 2 .Y.
 
 
 ## Normalização de tabelas
