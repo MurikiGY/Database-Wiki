@@ -20,7 +20,7 @@ Seja R um esquema de relação e X e Y conjuntos não-vazios de atributos em R.
 Dizemos que uma instância r de R satisfaz a DF X -> Y se o seguinte vale para todo par
 de tuplas t1 e t2 em r:
 
-- Se t 1 . X = t 2 . X, então t 1 . Y = t 2 .Y.
+- Se t1.X = t2.X, então t1.Y = t2.Y
 
 
 ## Normalização de tabelas
