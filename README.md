@@ -154,9 +154,16 @@ DELETE FROM <table> WHERE <attribute>=<value>;
 
 ### Alterar horarios
 ``` sql
-UPDATE <table> set <column> = <column> +-  interval ' <interval> '
+UPDATE <table> set <column> = <column> +-  interval ' <interval> ';
 ```
 
+
+## Metodo de acesso
+Por default, postgres cria tabelas com o metodo de acesso como heap. É possível alterar com o seguinte comando
+``` sql
+ALTER TABLE <table> SET ACCESS METHOD <method>;
+
+```
 
 
 ## Consulta de dados
