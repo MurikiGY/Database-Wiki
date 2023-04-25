@@ -33,6 +33,8 @@ de tuplas t1 e t2 em r:
 
 ### Forma normal Boyce-Codd
 
+## Denial Constraints
+
 
 ## Acesso ao banco
 ### Postgresql
