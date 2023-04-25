@@ -15,6 +15,9 @@ Lista de funcionalidades de um SGDB. (postgres em sua maioria)
 - [Tamanho do Banco](#tamanho-do-banco)
 - [Cluster em disco externo](#Cluster-em-disco-externo-postgres)
 
+## Data profiling
+the set of activities to gather statistical and structural properties, i.e, metadata, about datasets
+
 ## Dependencias funcionais]
 Uma dependência funcional (DF) é um tipo de restrição de integridade que generaliza o conceito de chave.
 Seja R um esquema de relação e X e Y conjuntos não-vazios de atributos em R.
@@ -292,3 +295,6 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 
 ## Bibliografia
 - https://database.guide/add-hours-to-a-time-value-in-postgresql/
+- https://www.inf.ufpr.br/eduardo/papers/p386-pena.pdf
+- https://www.inf.ufpr.br/eduardo/papers/DEXA2018.pdf
+
