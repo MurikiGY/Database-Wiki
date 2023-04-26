@@ -18,7 +18,7 @@ Lista de funcionalidades de um SGDB. (postgres em sua maioria)
 ## Data profiling
 the set of activities to gather statistical and structural properties, i.e, metadata, about datasets
 
-## Dependencias funcionais]
+## Dependencias funcionais
 Uma dependência funcional (DF) é um tipo de restrição de integridade que generaliza o conceito de chave.
 Seja R um esquema de relação e X e Y conjuntos não-vazios de atributos em R.
 Dizemos que uma instância r de R satisfaz a DF X -> Y se o seguinte vale para todo par
