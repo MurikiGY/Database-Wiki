@@ -297,4 +297,5 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 - https://database.guide/add-hours-to-a-time-value-in-postgresql/
 - https://www.inf.ufpr.br/eduardo/papers/p386-pena.pdf
 - https://www.inf.ufpr.br/eduardo/papers/DEXA2018.pdf
+- Views: https://towardsdatascience.com/the-misconception-of-views-in-sql-92fa9fe8b89b
 
