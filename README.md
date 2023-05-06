@@ -294,8 +294,8 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 
 
 ## Bibliografia
-- https://database.guide/add-hours-to-a-time-value-in-postgresql/
-- https://www.inf.ufpr.br/eduardo/papers/p386-pena.pdf
-- https://www.inf.ufpr.br/eduardo/papers/DEXA2018.pdf
+- Timevalue: https://database.guide/add-hours-to-a-time-value-in-postgresql/
+- Papers: https://www.inf.ufpr.br/eduardo/papers/p386-pena.pdf
+- Papers: https://www.inf.ufpr.br/eduardo/papers/DEXA2018.pdf
 - Views: https://towardsdatascience.com/the-misconception-of-views-in-sql-92fa9fe8b89b
-
+- Vacuum: https://www.percona.com/blog/postgresql-vacuuming-to-optimize-database-performance-and-reclaim-space/
