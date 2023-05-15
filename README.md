@@ -300,4 +300,4 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 - Views: https://towardsdatascience.com/the-misconception-of-views-in-sql-92fa9fe8b89b
 - Vacuum: https://www.percona.com/blog/postgresql-vacuuming-to-optimize-database-performance-and-reclaim-space/
 - Postgresql tools: https://wiki.postgresql.org/wiki/Performance_Analysis_Tools
-- 
+- Statistics: https://www.citusdata.com/blog/2018/03/06/postgres-planner-and-its-usage-of-statistics/
