@@ -226,8 +226,12 @@ SELECT <select_list> FROM <table1> tb_1 LEFT JOIN <table2> tb_2 on tb_1.key = tb
 ```
 
 
-
 ## Backup por dump
+Dump de esquema sem importar os dados:
+``` sql
+pg_dump --schema-only databasename
+```
+
 
 
 ## Tamanho do Banco
