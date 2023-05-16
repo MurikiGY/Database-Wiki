@@ -306,3 +306,4 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 - Postgresql tools: https://wiki.postgresql.org/wiki/Performance_Analysis_Tools
 - Statistics: https://www.citusdata.com/blog/2018/03/06/postgres-planner-and-its-usage-of-statistics/
 - Explain: https://www.cybertec-postgresql.com/en/how-to-interpret-postgresql-explain-analyze-output/?gclid=EAIaIQobChMIq7ylhMX3_gIVpDrUAR1nnw2UEAAYASAAEgKUI_D_BwE
+- Analyze: https://www.commandprompt.com/education/how-to-use-analyze-command-in-postgresql/
