@@ -1,3 +1,5 @@
+#!bin/bash
+
 # If there is no first parameter
 if [[ -z "$1" ]]
 then
@@ -64,13 +66,17 @@ else
 
 	# Table overview
 	else
-
 		datname=$1
 		table=$2
-		printf "Searching data from $table in $datname...\n\n"
+		directory="TablesData"
+		printf "Searching data from $table in $datname...\n"
 
-		# Null percentage
-		printf "Null relation:\n"
+		if [ ! -d $directory ]
+		then
+			mkdir $directory
+		fi
+
+		# Postgres statistics table
 		sudo -i -u postgres psql -d $datname -c 'SELECT
 		    attname AS column,
 		    null_frac,
@@ -78,8 +84,18 @@ else
 		    n_distinct,
 		    most_common_vals
 		FROM pg_stats
-		WHERE tablename = '"'$table'"' '
+		WHERE tablename = '"'$table'"' ' > $directory/$table.datatable
+
+		printf "Generated file: $table.datatable in $directory\n"
+
+		# Table statistics
+		head -n -2 $directory/$table.datatable | tail -n +3 > $table.tmp
+		awk -F '|' '{sum+=$2} END { print "Table NULL percentage: ",sum/NR}' $table.tmp > $directory/$table.statistics
+		printf "\n" >> $directory/$table.statistics
+		printf "Columns with only one distinct:\n" >> $directory/$table.statistics
+		awk -F '|' '$4 <= 1' $table.tmp >> $directory/$table.statistics
+
+		printf "Generated file: $table.statistics in $directory \n"
 
 	fi
 fi
-
