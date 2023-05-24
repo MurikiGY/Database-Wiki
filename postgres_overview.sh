@@ -26,13 +26,16 @@ table_statistics () {
 
     #Table statistics, ADD STATISTICAL SEARCH HERE
     head -n -2 $dirname/$tabname.datatable | tail -n +3 > $tabname.tmp
-	printf "Critical data from $tabname: \n" > $dirname/$tabname.statistics
-    awk -F '|' '{sum+=$2} END { print "Table NULL percentage: ",sum/NR}' $tabname.tmp >> $dirname/$tabname.statistics
-    printf "Less than two distinct values:\n" >> $dirname/$tabname.statistics
-	printf "                column                 |   null_frac   | avg_width |  n_distinct   |  most_common_vals\n" >> $dirname/$tabname.statistics
-	printf "=======================================+===============+===========+===============+==================\n" >> $dirname/$tabname.statistics
+    printf "< $tabname >\n" > $dirname/$tabname.statistics
+    #NULL percentage
+    awk -F '|' '{sum+=$2} END { print "NULL %: ",sum/NR}' $tabname.tmp >> $dirname/$tabname.statistics
+    #Distinct== 0 or 1
+    printf "                column               |   null_frac   | byte_width |  n_distinct   |  most_common_vals\n" >> $dirname/$tabname.statistics
+    printf "=====================================+===============+============+===============+==================\n" >> $dirname/$tabname.statistics
     awk -F '|' '$4 == 0 || $4 == 1' $tabname.tmp >> $dirname/$tabname.statistics
-	printf "\n\n" >> $dirname/$tabname.statistics
+    printf "\n\n" >> $dirname/$tabname.statistics
+    #Graphic
+    #cut -d'|' -f1,2 $tabname.tmp | LC_ALL=C sort -t'|' -k2 --numeric-sort > data/$tabname
 
     #Remove temp files
     rm $tabname.tmp
@@ -66,8 +69,8 @@ else
 		sudo -i -u postgres psql -d $datname -c 'SELECT
 		    tab.table_name,
 		    pg_size_pretty( pg_relation_size(quote_ident(tab.table_name)) ) AS table_size,
-		    aux.column_count,
-			aux2.rows_n
+		    aux.column_count AS column_count,
+			aux2.rows_n AS row_count
 		FROM information_schema.tables AS tab
 		
 		INNER JOIN
@@ -104,7 +107,7 @@ else
 			tab.table_name
 		FROM information_schema.tables AS tab
 		WHERE tab.table_schema = '"'public'"';' | head -n -2 | tail -n +3 > TableList.tmp
-		printf "Database critical information: \n" >> $datname.statistics
+		printf "\n ----- DATABASE CRITICAL INFORMATION ----- \n" >> $datname.statistics
 		for table in `cat TableList.tmp`
 		do
 			table_statistics $datname $table TablesData
@@ -121,3 +124,4 @@ else
 		table_statistics $datname $table $directory
 	fi
 fi
+
