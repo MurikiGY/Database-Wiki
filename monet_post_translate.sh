@@ -1,3 +1,6 @@
+# With a dump file, generate a file with only create tables and primary keys statements
+# then, again with the dump file, generate a file with only insert foreign keys statements
+
 
 # ====================== Main ======================
 
@@ -10,14 +13,20 @@ then
 else
 	file=$1
 
-	#Remove sequences and set schema
-	grep -v -E 'CREATE SEQUENCE|ALTER TABLE|SET SCHEMA' $file > output.sql
+	#Remove sys, set schema and sequences
+	sed 's/"sys".//g' $file | grep -v -E 'SET SCHEMA|CREATE SEQUENCE|ALTER TABLE' > temp
 
-	#Remove sys
-	sed -i 's/"sys".//g' output.sql
+	#Remove foreign keys from dump file and adjust types
+	grep -v -E 'FOREIGN KEY' temp | sed ':a;N;$!ba;s/,\n);/\n);/g' 	|
+	sed 's/TINYINT/SMALLINT/g' 					|
+	sed 's/DOUBLE/DOUBLE PRECISION/g' 				|
+	sed 's/CHARACTER LARGE OBJECT/TEXT/g' > create_tables.sql
 
-	#Adjust types
-	sed -i 's/TINYINT/SMALLINT/g' output.sql
-	sed -i 's/DOUBLE/DOUBLE PRECISION/g' output.sql
-	sed -i 's/CHARACTER LARGE OBJECT/TEXT/g' output.sql
+	#Generate the file of foreign keys creation
+	grep -E 'CREATE TABLE|FOREIGN KEY|);' temp | sed -z 's/\n);/;/g' | sed 's/CREATE/ALTER/g' | \
+	sed -z 's/\n\tCONSTRAINT/\tCONSTRAINT/g'   | grep 'CONSTRAINT'   | \
+	sed -z 's/\tCONSTRAINT/\n\tCONSTRAINT/g'   | sed -z 's/(\n/\n/g' | \
+	sed 's/CONSTRAINT/ADD CONSTRAINT/g' > foreign_key.sql
+
+	rm temp
 fi
