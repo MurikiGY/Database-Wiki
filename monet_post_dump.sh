@@ -14,33 +14,46 @@ else
 	file=$1
 
 	#Remove sys, set schema and sequences
-	sed 's/"sys".//g' $file | grep -v -E 'SET SCHEMA|CREATE SEQUENCE|ALTER TABLE' > temp
+	sed 's/"sys".//g' $file | grep -v -E 'SET SCHEMA|CREATE SEQUENCE|ALTER TABLE' > tmp
 
 	#Remove coments, foreign keys from dump file and adjust types
-	grep -v -E 'FOREIGN KEY|--' temp		| sed ':a;N;$!ba;s/,\n);/\n);/g' 	| sed 's/"//g' |
-	sed 's/TINYINT/SMALLINT/g' 			| sed 's/DOUBLE/DOUBLE PRECISION/g' 	|
+	grep -v -E 'FOREIGN KEY|--' tmp		| sed ':a;N;$!ba;s/,\n);/\n);/g' 	| sed 's/"//g' |
+	sed 's/TINYINT/SMALLINT/g' 				| sed 's/DOUBLE/DOUBLE PRECISION/g' |
 	sed 's/CHARACTER LARGE OBJECT/TEXT/g' > create_tables.sql
 
 	#Generate the file of foreign keys creation
-	grep -E 'CREATE TABLE|FOREIGN KEY|);' temp | sed -z 's/\n);/;/g' | sed 's/CREATE/ALTER/g' |
-	sed -z 's/\n\tCONSTRAINT/\tCONSTRAINT/g'   | grep 'CONSTRAINT'   |
-	sed -z 's/\tCONSTRAINT/\n\tCONSTRAINT/g'   | sed -z 's/(\n/\n/g' |
+	grep -E 'CREATE TABLE|FOREIGN KEY|);' tmp  | sed -z 's/\n);/;/g' | sed 's/CREATE/ALTER/g' | \
+	sed -z 's/\n\tCONSTRAINT/\tCONSTRAINT/g'   | grep 'CONSTRAINT'   | \
+	sed -z 's/\tCONSTRAINT/\n\tCONSTRAINT/g'   | sed -z 's/(\n/\n/g' | \
 	sed 's/CONSTRAINT/ADD CONSTRAINT/g' > foreign_key.sql
 
-	#Generate file to export data
+	#Generate temp file to export from monet and import to postgres
+	data_path='\/tmp\/data_table\/'
 	mkdir -p /tmp/database_data
-	grep -v -E 'CONSTRAINT|START TRANSACTION|COMMIT' create_tables.sql				        |
-	sed ':a;N;$!ba;s/,\n);/\n);/g' 	| sed 's/NOT NULL//g'							|
-	sed 's/INTEGER//g'		| sed 's/DOUBLE PRECISION//g'			                	|
-	sed 's/SMALLINT//g'		| sed 's/BOOLEAN//g'							|
-	sed 's/BIGINT//g'		| sed 's/TEXT//g' 							|
-	sed 's/VARCHAR(.*)//g'		| sed 's/DECIMAL(.*)//g'  						|
-	tac				| sed -z 's/);\n\t/SELECT /g'					        |
-	sed '/^SELECT/s/$/,/'		| sed ':a;N;$!ba;s/,\nCREATE TABLE/\nFROM/g'	    			|
-	sed 's/(//g' 			| sed 's/SELECT /COPY SELECT\n\t/g' 			        	|
-	sed 's/ .*,/,/g'		| sed -E 's/(FROM) ([a-zA-Z0-9_-]+)/\1 \2 \2/g'	  			|
-	sed -E "s/FROM ([a-zA-Z0-9_-]+) ([a-zA-Z0-9_-]+)/FROM \1 INTO '\/tmp\/database_data\/\1.csv'/g"	|
-	sed "/^.*FROM/s/$/USING DELIMITERS '|' NULL AS '';/g" > export_data.csv
-	
-	rm temp
+	grep -v -E 'CONSTRAINT|START TRANSACTION|COMMIT' create_tables.sql	|
+	sed ':a;N;$!ba;s/,\n);/\n);/g' 	| sed 's/NOT NULL//g'				        |
+	sed 's/INTEGER//g'				      | sed 's/DOUBLE PRECISION//g'	    	|
+	sed 's/SMALLINT//g'				      | sed 's/BOOLEAN//g'			        	|
+	sed 's/BIGINT//g'				        | sed 's/TEXT//g' 			        		|
+	sed 's/VARCHAR(.*)//g'			    | sed 's/DECIMAL(.*)//g' > tmp2
+
+	#Generate export file
+	sed -z 's/\n//g' tmp2		| sed -z 's/CREATE/\nCREATE/g'		|
+	tail -n +2						  | sed 's/CREATE TABLE /COPY /g' 	|
+	sed -e "s/\\COPY \(.*\) (\(.*\));/\\COPY \1 (\2) FROM \1 INTO '$data_path\1.csv' USING DELIMITERS '|' NULL AS '';/g" |
+	sed 's/ [^ ]*//' 				| sed -z 's/(/(\n/g'				      |
+	sed -z 's/,/,\n/g' 			| sed -z 's/)/\n)/g' 				      |
+	sed 's/ .*,/,/g'				| sed 's/(//g'						        |
+	sed 's/) //g'					  | sed 's/COPY /COPY SELECT /g' > export_data.sql
+
+	#Generate import file
+	sed 's/ .*,/,/g' tmp2 			    | sed -z 's/\n//g' 							|
+	sed -z 's/CREATE/\nCREATE/g' 	  | tail -n +2								    |
+	sed 's/CREATE TABLE /\\COPY /g' | 
+	sed -e "s/\\COPY \(.*\) (\(.*\));/\\COPY \1 (\2) TO '$data_path\1.csv';/g" 	|
+	sed "s/;/ DELIMITER '|' CSV;/g" | sed -z 's/(/(\n/g' 						|
+	sed -z 's/,/,\n/g' 				      | sed -z 's/)/\n)/g' > import_data.sql
+
+	rm tmp
+	rm tmp2
 fi
