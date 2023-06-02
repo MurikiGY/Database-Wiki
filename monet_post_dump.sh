@@ -47,12 +47,12 @@ else
 	sed 's/) //g'               | sed 's/COPY /COPY SELECT /g' > export_data.sql
 
 	#Generate import file
-	sed 's/ .*,/,/g' tmp2           | sed -z 's/\n//g'                         |
-	sed -z 's/CREATE/\nCREATE/g'    | tail -n +2                               |
+	sed 's/ .*,/,/g' tmp2           | sed -z 's/\n//g'                           |
+	sed -z 's/CREATE/\nCREATE/g'    | tail -n +2                                 |
 	sed 's/CREATE TABLE /\\COPY /g' |
-	sed -e "s/\\COPY \(.*\) (\(.*\));/\\COPY \1 (\2) TO '$data_path\1.csv';/g" |
-	sed "s/;/ DELIMITER '|' CSV;/g" | sed -z 's/(/(\n/g'                       |
-	sed -z 's/,/,\n/g'              | sed -z 's/)/\n)/g' > import_data.sql
+	sed -e "s/\\COPY \(.*\) (\(.*\));/\\COPY \1 (\2) FROM '$data_path\1.csv';/g" |
+	sed -z 's/\t//g'                | sed 's/ \{1,\}/ /g'                        |
+	sed 's/ )/)/g' > import_data.sql
 
 	rm tmp
 	rm tmp2
