@@ -1,7 +1,7 @@
 # With a dump file, generate a file with only create tables and primary keys statements
 # then, again with the dump file, generate a file with only insert foreign keys statements
 
-# Generate dumpfile with msqldump -D <datname> > dumpfile.sql
+# Generate dumpfile with msqldump -d <datname> -D > dumpfile.sql
 
 # ====================== Main ======================
 
