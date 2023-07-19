@@ -308,3 +308,5 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 - Explain: https://www.cybertec-postgresql.com/en/how-to-interpret-postgresql-explain-analyze-output/?gclid=EAIaIQobChMIq7ylhMX3_gIVpDrUAR1nnw2UEAAYASAAEgKUI_D_BwE/
 - Analyze: https://www.commandprompt.com/education/how-to-use-analyze-command-in-postgresql/
 - Primary Keys: https://dataedo.com/kb/query/postgresql/list-all-primary-keys-and-their-columns/
+- Drop all constraints in database: https://confluence.atlassian.com/kb/how-to-drop-and-recreate-the-database-constraints-on-postgresql-776812450.html\
+- 
