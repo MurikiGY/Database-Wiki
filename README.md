@@ -299,6 +299,11 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 ## Issues
 - Mudar banco de lugar e ainda funcionar o systemctl: https://stackoverflow.com/questions/69371385/change-source-directory-in-clickhouse
 
+## Monitoramento
+- Tutorial: https://www.ashnik.com/monitoring-postgresql-with-prometheus-and-grafana/
+- Detalhe do postgres_export no prometheus.yml: https://schh.medium.com/monitoring-postgresql-databases-using-postgres-exporter-along-with-prometheus-and-grafana-1d68209ca687
+- Dashboard: https://grafana.com/grafana/dashboards/9628-postgresql-database/
+
 ## Bibliografia
 - Timevalue: https://database.guide/add-hours-to-a-time-value-in-postgresql/
 - Papers: https://www.inf.ufpr.br/eduardo/papers/p386-pena.pdf
