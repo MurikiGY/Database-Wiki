@@ -296,6 +296,9 @@ Por fim, acesse o cluster com `psql` e verifique o local dos dados com `SHOW dat
 
 Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog restart`
 
+## SGDB
+- https://cstack.github.io/db_tutorial/
+
 ## Issues
 - Mudar banco de lugar e ainda funcionar o systemctl: https://stackoverflow.com/questions/69371385/change-source-directory-in-clickhouse
 
