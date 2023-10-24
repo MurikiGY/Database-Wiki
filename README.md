@@ -302,6 +302,8 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 ## Issues
 - Mudar banco de lugar e ainda funcionar o systemctl: https://stackoverflow.com/questions/69371385/change-source-directory-in-clickhouse
 
+- Buscar duplicatas em tabelas sem restrições: Testar se `SELECT DISTINCT * FROM tabela` é menor que `SELECT COUNT(*) FROM tabela`
+
 ## Monitoramento
 - Tutorial: https://www.ashnik.com/monitoring-postgresql-with-prometheus-and-grafana/
 - Detalhe do postgres_export no prometheus.yml: https://schh.medium.com/monitoring-postgresql-databases-using-postgres-exporter-along-with-prometheus-and-grafana-1d68209ca687
