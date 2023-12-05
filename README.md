@@ -304,6 +304,8 @@ Caso queira reiniciar o cluster: `pg_ctl -D /HDD/space1/postgres/ -l arquivolog 
 
 - Buscar duplicatas em tabelas sem restrições: Testar se `SELECT DISTINCT * FROM tabela` é menor que `SELECT COUNT(*) FROM tabela`
 
+- PSQL sem a formatação de tabela pra script: `psql -qAtX` https://stackoverflow.com/questions/45352374/psql-non-select-how-to-remove-formatting-and-show-only-certain-columns
+
 ## Monitoramento
 - Tutorial: https://www.ashnik.com/monitoring-postgresql-with-prometheus-and-grafana/
 - Detalhe do postgres_export no prometheus.yml: https://schh.medium.com/monitoring-postgresql-databases-using-postgres-exporter-along-with-prometheus-and-grafana-1d68209ca687
