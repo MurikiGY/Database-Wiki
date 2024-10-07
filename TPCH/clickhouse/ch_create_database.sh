@@ -7,7 +7,7 @@ SCHEMA_FILE="ch_tpch_schema.sql"
 echo "CREATE DATABASE"
 clickhouse-client -q "CREATE DATABASE $DATABASE"
 
-echo "CREATE TPCH TABLES, INDEXES AND CONSTRAINTS"
+echo "CREATE TPCH TABLES"
 clickhouse-client -d $DATABASE --queries-file $SCHEMA_FILE
 
 echo "POPULATE DATABASE"
