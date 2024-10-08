@@ -1,0 +1,6 @@
+5
+name;categoric
+phone;categoric
+position;categoric
+salary;numeric
+hired;numeric
