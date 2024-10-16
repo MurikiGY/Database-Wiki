@@ -6,26 +6,91 @@
 using namespace std;
 typedef map<string,vector<int>> clusters_c;
 typedef map<int,vector<int>,greater<int>> clusters_n;
+typedef map<int,vector<pair<int,int>>> predicates;
 // Generate the predicates using the attributes
 // The predicates are only between attributes with the same domain
-void gen_predicates(vector<string> att_n, vector<string> att_c,map<string,vector<string>> pred_n,map<string,vector<string>> pred_c){
-  for (int i=0; i<att_n.size() ;i++)
-    for (int j=i; j<att_n.size() ;j++){
-      cout << att_n[i] << " = " << att_n[j] << endl;
-      cout << att_n[i] << " != " << att_n[j] << endl;
-      cout << att_n[i] << " < " << att_n[j] << endl;
-      cout << att_n[i] << " <= " << att_n[j] << endl;
-      cout << att_n[i] << " >  " << att_n[j] << endl;
-      cout << att_n[i] << " >= " << att_n[j] << endl;
-    }
 
-  cout << endl;
-
-  for (int i=0; i<att_c.size() ;i++)
-    for (int j=i; j<att_c.size() ;j++){
-      cout << att_c[i] << " = " << att_c[j] << endl;
-      cout << att_c[i] << " != " << att_c[j] << endl;
+void print_all(predicates pred_n,predicates pred_c,map<string,clusters_n> plis_n,map<string,clusters_c> plis_c){
+  for(auto& pair: pred_c){  
+    for(auto& pred:pair.second){
+      switch(pair.first){
+      case 0:
+        cout <<pred.first  << " = " << pred.second << endl;
+        break;
+      case 1:
+          cout <<pred.first  << " != " << pred.second << endl;
+          break;
+      default:
+        break;
+      }
     }
+  }
+  for(auto& pair: pred_n){  
+    for(auto& pred:pair.second){
+      switch(pair.first){
+      case 0:
+        cout <<pred.first  << " = " << pred.second << endl;
+        break;
+      case 1:
+          cout <<pred.first  << " != " << pred.second << endl;
+          break;
+      case 2:
+        cout <<pred.first  << " < " << pred.second << endl;
+          break;
+      case 3:
+        cout <<pred.first  << " <= " << pred.second << endl;
+          break;
+      case 4:
+        cout <<pred.first  << " > " << pred.second << endl;
+          break;
+      case 5:
+        cout <<pred.first  << " >= " << pred.second << endl;
+          break;
+      default:
+        break;
+      }
+    }
+  }
+  for(const auto& pair: plis_n){
+    cout << pair.first << ":" << endl;
+    for (const auto& key : pair.second) {
+        cout << key.first << "->";
+      for (const auto& value : key.second) {
+        cout << value << "|";
+    }
+    cout << endl;
+    }
+  }
+  for(const auto& pair: plis_c){
+    cout << pair.first << ":" << endl;
+    for (const auto& key : pair.second) {
+        cout << key.first << "->";
+      for (const auto& value : key.second) {
+        cout << value << "|";
+    }
+    cout << endl;
+    }
+  }
+}
+
+
+void gen_predicates(map<string,int>& att_n, map<string,int>& att_c,predicates& pred_n,predicates& pred_c){
+  for (auto it1 = att_n.begin(); it1 != att_n.end() ;++it1){
+    for (auto it2 = it1; it2 != att_n.end() ;++it2){
+      pred_n[0].push_back({it1->second,it2->second});
+      pred_n[1].push_back({it1->second,it2->second});
+      pred_n[2].push_back({it1->second,it2->second});
+      pred_n[3].push_back({it1->second,it2->second});
+      pred_n[4].push_back({it1->second,it2->second});
+      pred_n[5].push_back({it1->second,it2->second});
+    }
+}
+  for (auto it1 = att_c.begin(); it1 != att_c.end() ;++it1){
+    for (auto it2 = it1; it2 != att_c.end() ;++it2){
+      pred_c[0].push_back({it1->second,it2->second});
+      pred_c[1].push_back({it1->second,it2->second});
+    }
+  }
 }
 
 map<string,vector<string>> build_table(string table_file){
@@ -52,33 +117,20 @@ map<string,vector<string>> build_table(string table_file){
             i++;
         }
     }
-
     file.close();
-
-    // for (const auto& pair : data) {
-    //     cout << "Attribute: " << pair.first << " -> ";
-    //     for (const auto& value : pair.second) {
-    //         cout << value << " ";
-    //     }
-    //     cout << endl;
-    // }
     return data;
 }
 
-void build_pli(vector<string> att_n, vector<string> att_c,map<string,clusters_c> plis_c,map<string,clusters_n> plis_n,map<string,vector<string>> data){
+void build_pli(map<string,int>& att_n, map<string,int>& att_c,map<string,clusters_c>& plis_c,map<string,clusters_n>& plis_n,map<string,vector<string>>& data){
   int index=0;
   for (const auto& pair : data) {
     for (const auto& value : pair.second) {
-      auto it = find(att_n.begin(),att_n.end(),pair.first);
-      if (it != att_n.end()){
-        // att_plis_n[pair.first].clusters[stoi(value)].push_back(index);
+      if(att_n.find(pair.first) !=att_n.end()){
         plis_n[pair.first][stoi(value)].push_back(index);
         index++;
       }
       else{
-        it = find(att_c.begin(),att_c.end(),pair.first);
-        if (it != att_c.end()){
-          // att_plis_c[pair.first].clusters[value].push_back(index);
+        if(att_c.find(pair.first) !=att_c.end()){
           plis_c[pair.first][value].push_back(index);
           index++;
         }
@@ -86,39 +138,14 @@ void build_pli(vector<string> att_n, vector<string> att_c,map<string,clusters_c>
     }
     index=0;
   } 
-
-  
-  for(const auto& pair: plis_n){
-    cout << pair.first << ":" << endl;
-    for (const auto& key : pair.second) {
-        cout << key.first << "->";
-      for (const auto& value : key.second) {
-        cout << value << "|";
-    }
-    cout << endl;
-    }
-  }
-  for(const auto& pair: plis_c){
-    cout << pair.first << ":" << endl;
-    for (const auto& key : pair.second) {
-        cout << key.first << "->";
-      for (const auto& value : key.second) {
-        cout << value << "|";
-    }
-    cout << endl;
-    }
-  }
 }
-
-  // map<string,PLI<int>> att_plis_n;
-  // map<string,PLI<string>> att_plis_c;
 
 int main (int argc, char *argv[]) {
   int leng;
-  vector<string> att_n;
-  vector<string> att_c;
-  map<string,vector<string>> pred_n;
-  map<string,vector<string>> pred_c;
+  map<string,int> att_n;
+  map<string,int> att_c;
+  predicates pred_n;
+  predicates pred_c;
   map<string,clusters_c> plis_c;
   map<string,clusters_n> plis_n;
   map<string,vector<string>> data;
@@ -130,13 +157,13 @@ int main (int argc, char *argv[]) {
     att = line.substr(0, line.find(";"));
     type = line.substr(line.find(";")+1, line.length());
     if (type == "numeric") 
-      att_n.push_back(att); 
+      att_n[att]=i; 
     else if (type == "categoric")
-      att_c.push_back(att);
+      att_c[att]=i;
   }
-
   gen_predicates(att_n, att_c,pred_n,pred_c);
   data = build_table("table.csv");
   build_pli(att_n,att_c,plis_c,plis_n,data);
+  print_all(pred_n,pred_c,plis_n,plis_c);
   return 0;
 }
