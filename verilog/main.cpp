@@ -2,71 +2,42 @@
 #include<bits/stdc++.h>
 #include <vector>
 #include <string>
-#include "pli.h"
 using namespace std;
-typedef map<string,vector<int>> clusters_c;
-typedef map<int,vector<int>,greater<int>> clusters_n;
-typedef map<int,vector<pair<int,int>>> predicates;
+typedef map<string,vector<int>> clusters_c; // cluster do PLI composto por <distinct_att,vector de ids de tuplas>
+typedef map<int,vector<int>,greater<int>> clusters_n; // cluster do PLI composto por <distinct_att,vector de ids de tuplas>
+typedef vector<pair<int,pair<int,int>>> predicates; //vetor de predicados composto por <operação,<tx,ty>>
+// typedef vector<vector<pair<int,pair<int,int>>>> evidences;
 // Generate the predicates using the attributes
 // The predicates are only between attributes with the same domain
 
 void print_all(predicates pred_n,predicates pred_c,map<string,clusters_n> plis_n,map<string,clusters_c> plis_c){
-  for(auto& pair: pred_c){  
-    for(auto& pred:pair.second){
-      switch(pair.first){
-      case 0:
-        cout <<pred.first  << " = " << pred.second << endl;
-        break;
-      case 1:
-          cout <<pred.first  << " != " << pred.second << endl;
-          break;
-      default:
-        break;
-      }
-    }
+  vector<string> op_to_string {
+     "=", "!=", "<", "<=", ">", ">="
+  };
+  for(auto& [op,tuples]: pred_c){  
+    auto& [tx, ty] = tuples;
+    cout << tx << " " << op_to_string[op] << " " << ty << endl;
   }
-  for(auto& pair: pred_n){  
-    for(auto& pred:pair.second){
-      switch(pair.first){
-      case 0:
-        cout <<pred.first  << " = " << pred.second << endl;
-        break;
-      case 1:
-          cout <<pred.first  << " != " << pred.second << endl;
-          break;
-      case 2:
-        cout <<pred.first  << " < " << pred.second << endl;
-          break;
-      case 3:
-        cout <<pred.first  << " <= " << pred.second << endl;
-          break;
-      case 4:
-        cout <<pred.first  << " > " << pred.second << endl;
-          break;
-      case 5:
-        cout <<pred.first  << " >= " << pred.second << endl;
-          break;
-      default:
-        break;
-      }
-    }
+  for(auto& [op,tuples]: pred_n){  
+    auto& [tx, ty] = tuples;
+    cout << tx << " " << op_to_string[op] << " " << ty << endl;
   }
-  for(const auto& pair: plis_n){
-    cout << pair.first << ":" << endl;
-    for (const auto& key : pair.second) {
-        cout << key.first << "->";
-      for (const auto& value : key.second) {
-        cout << value << "|";
+  for(const auto& [att,clusters]: plis_n){
+    cout << att << ":" << endl;
+    for (const auto& [element,ids] : clusters) {
+        cout << element << "->";
+      for (const auto& id : ids) {
+        cout << id << "|";
     }
     cout << endl;
     }
   }
-  for(const auto& pair: plis_c){
-    cout << pair.first << ":" << endl;
-    for (const auto& key : pair.second) {
-        cout << key.first << "->";
-      for (const auto& value : key.second) {
-        cout << value << "|";
+  for(const auto& [att,clusters]: plis_c){
+    cout << att << ":" << endl;
+    for (const auto& [element,ids] : clusters) {
+        cout << element << "->";
+      for (const auto& id : ids) {
+        cout << id << "|";
     }
     cout << endl;
     }
@@ -76,21 +47,21 @@ void print_all(predicates pred_n,predicates pred_c,map<string,clusters_n> plis_n
 
 void gen_predicates(map<string,int>& att_n, map<string,int>& att_c,predicates& pred_n,predicates& pred_c){
   for (auto it1 = att_n.begin(); it1 != att_n.end() ;++it1){
-    for (auto it2 = it1; it2 != att_n.end() ;++it2){
-      pred_n[0].push_back({it1->second,it2->second});
-      pred_n[1].push_back({it1->second,it2->second});
-      pred_n[2].push_back({it1->second,it2->second});
-      pred_n[3].push_back({it1->second,it2->second});
-      pred_n[4].push_back({it1->second,it2->second});
-      pred_n[5].push_back({it1->second,it2->second});
-    }
-}
-  for (auto it1 = att_c.begin(); it1 != att_c.end() ;++it1){
-    for (auto it2 = it1; it2 != att_c.end() ;++it2){
-      pred_c[0].push_back({it1->second,it2->second});
-      pred_c[1].push_back({it1->second,it2->second});
+    for (auto it2 = att_n.begin(); it2 != att_n.end() ;++it2){
+      for(int k =0;k<6;++k){
+        pred_n.push_back({k,{it1->second,it2->second}});  //Adiciona ao vetor de predicados um par <operação,tuplas de att>
+      }
     }
   }
+  
+  for (auto it1 = att_c.begin(); it1 != att_c.end() ;++it1){
+    for (auto it2 = att_c.begin(); it2 != att_c.end() ;++it2){
+      for(int k =0;k<2;++k){
+        pred_c.push_back({k,{it1->second,it2->second}});  //Adiciona ao vetor de predicados um par <operação,tuplas de att>
+      }
+    }
+  }
+
 }
 
 map<string,vector<string>> build_table(string table_file){
@@ -123,15 +94,15 @@ map<string,vector<string>> build_table(string table_file){
 
 void build_pli(map<string,int>& att_n, map<string,int>& att_c,map<string,clusters_c>& plis_c,map<string,clusters_n>& plis_n,map<string,vector<string>>& data){
   int index=0;
-  for (const auto& pair : data) {
-    for (const auto& value : pair.second) {
-      if(att_n.find(pair.first) !=att_n.end()){
-        plis_n[pair.first][stoi(value)].push_back(index);
+  for (const auto& [att,elements] : data) {
+    for (const auto& value : elements) {
+      if(att_n.find(att) !=att_n.end()){
+        plis_n[att][stoi(value)].push_back(index); 
         index++;
       }
       else{
-        if(att_c.find(pair.first) !=att_c.end()){
-          plis_c[pair.first][value].push_back(index);
+        if(att_c.find(att) !=att_c.end()){
+          plis_c[att][value].push_back(index);
           index++;
         }
       }
