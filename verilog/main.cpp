@@ -5,23 +5,24 @@
 using namespace std;
 typedef map<string,vector<int>> clusters_c; // cluster do PLI composto por <distinct_att,vector de ids de tuplas>
 typedef map<int,vector<int>,greater<int>> clusters_n; // cluster do PLI composto por <distinct_att,vector de ids de tuplas>
-typedef vector<pair<int,pair<int,int>>> predicates; //vetor de predicados composto por <operação,<tx,ty>>
-// typedef vector<vector<pair<int,pair<int,int>>>> evidences;
+typedef vector<pair<int,pair<int,int>>> predicates; //vetor de predicados composto por <operação,<Ax,Ay>>
+int n_amount;
+// #define MAXPREDICATES (1LL<<8)
+// #define ISCATEGORIC(X) (X) & (1LL<<7)
+
+//PENSAR EM COMO FAZER UM VETOR SÓ PRAS PLI
+
 // Generate the predicates using the attributes
 // The predicates are only between attributes with the same domain
+// vector<string> op_to_string {"=", "!=", "<", "<=", ">", ">="};
 
-void print_all(predicates pred_n,predicates pred_c,map<string,clusters_n> plis_n,map<string,clusters_c> plis_c){
-  vector<string> op_to_string {
-     "=", "!=", "<", "<=", ">", ">="
-  };
-  for(auto& [op,tuples]: pred_c){  
-    auto& [tx, ty] = tuples;
-    cout << tx << " " << op_to_string[op] << " " << ty << endl;
+void print_all(vector<vector<int>> B,predicates P,map<string,clusters_n> plis_n,map<string,clusters_c> plis_c){
+  vector<string> op_to_string {"=", "!=", "<", "<=", ">", ">="};
+  for(auto& [op,tuples]: P){  
+    auto& [Ax, Ay] = tuples;
+    cout << Ax << " " << op_to_string[op] << " " << Ay << endl;
   }
-  for(auto& [op,tuples]: pred_n){  
-    auto& [tx, ty] = tuples;
-    cout << tx << " " << op_to_string[op] << " " << ty << endl;
-  }
+  
   for(const auto& [att,clusters]: plis_n){
     cout << att << ":" << endl;
     for (const auto& [element,ids] : clusters) {
@@ -42,26 +43,46 @@ void print_all(predicates pred_n,predicates pred_c,map<string,clusters_n> plis_n
     cout << endl;
     }
   }
+  for(auto& x:B){
+    for(auto& e:x){
+     cout << e << endl;
+    }
+  }
 }
 
+vector<vector<int>> build_B(predicates& P,int size){
+  vector<int> eahead;
+  vector<vector<int>>B(size*size);
+  int op;
+  for(int i=0;i<P.size();++i){
+    op = P[i].first;
+    if(op == 1 || op == 2 || op == 3  ){ // != || < || <=
+      eahead.push_back(i);
+    } 
+  }
+  for(auto& e:B){
+    e=eahead;
+  }
+  return B;
+  
+}
 
-void gen_predicates(map<string,int>& att_n, map<string,int>& att_c,predicates& pred_n,predicates& pred_c){
+void gen_predicates(map<string,int>& att_n, map<string,int>& att_c,predicates& P){
   for (auto it1 = att_n.begin(); it1 != att_n.end() ;++it1){
     for (auto it2 = att_n.begin(); it2 != att_n.end() ;++it2){
       for(int k =0;k<6;++k){
-        pred_n.push_back({k,{it1->second,it2->second}});  //Adiciona ao vetor de predicados um par <operação,tuplas de att>
+        P.push_back({k,{it1->second,it2->second}});  //Adiciona ao vetor de predicados um par <operação,tuplas de att>
       }
     }
   }
-  
+  n_amount=P.size();
   for (auto it1 = att_c.begin(); it1 != att_c.end() ;++it1){
     for (auto it2 = att_c.begin(); it2 != att_c.end() ;++it2){
       for(int k =0;k<2;++k){
-        pred_c.push_back({k,{it1->second,it2->second}});  //Adiciona ao vetor de predicados um par <operação,tuplas de att>
+        P.push_back({k,{it1->second,it2->second}});  //Adiciona ao vetor de predicados um par <operação,tuplas de att>
       }
     }
   }
-
 }
 
 map<string,vector<string>> build_table(string table_file){
@@ -115,11 +136,11 @@ int main (int argc, char *argv[]) {
   int leng;
   map<string,int> att_n;
   map<string,int> att_c;
-  predicates pred_n;
-  predicates pred_c;
+  predicates P;
   map<string,clusters_c> plis_c;
   map<string,clusters_n> plis_n;
   map<string,vector<string>> data;
+  vector<vector<int>> B;
   // Read attributes
   cin >> leng;
   for (int i=0; i<leng ;i++){
@@ -132,9 +153,11 @@ int main (int argc, char *argv[]) {
     else if (type == "categoric")
       att_c[att]=i;
   }
-  gen_predicates(att_n, att_c,pred_n,pred_c);
+
+  gen_predicates(att_n, att_c,P);
   data = build_table("table.csv");
   build_pli(att_n,att_c,plis_c,plis_n,data);
-  print_all(pred_n,pred_c,plis_n,plis_c);
+  B = build_B(P,att_n.size()+att_c.size());
+  print_all(B,P,plis_n,plis_c);
   return 0;
 }
