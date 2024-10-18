@@ -7,6 +7,7 @@ typedef map<string,vector<int>> clusters_c; // cluster do PLI composto por <dist
 typedef map<int,vector<int>,greater<int>> clusters_n; // cluster do PLI composto por <distinct_att,vector de ids de tuplas>
 typedef vector<pair<int,pair<int,int>>> predicates; //vetor de predicados composto por <operação,<Ax,Ay>>
 typedef map<pair<int,pair<int,int>>, int> predicates_index; //mapeia cada predicado para seu index no vetor
+int r;
 // #define MAXPREDICATES (1LL<<8)
 // #define ISCATEGORIC(X) (X) & (1LL<<7)
 
@@ -20,7 +21,8 @@ void print_all(vector<vector<int>> B,predicates P,map<int,clusters_n> plis_n,map
   vector<string> op_to_string {"=", "!=", "<", "<=", ">", ">="};
   for(auto& [op,tuples]: P){  
     auto& [Ax, Ay] = tuples;
-    cout << Ax << " " << op_to_string[op] << " " << Ay << endl;
+    if(op ==0)
+      cout << Ax << " " << op_to_string[op] << " " << Ay << endl;
   }
   
   for(const auto& [att,clusters]: plis_n){
@@ -43,12 +45,12 @@ void print_all(vector<vector<int>> B,predicates P,map<int,clusters_n> plis_n,map
     cout << endl;
     }
   }
-  // for(auto& x:B){
-  //   for(auto& e:x){
-  //    cout << e << endl;
-  //   }
-  //   break;
-  // }
+  for(auto& x:B){
+    for(auto& e:x){
+     cout << e << endl;
+    }
+    break;
+  }
 }
 
 vector<vector<int>> build_B(predicates& P,int size){
@@ -70,24 +72,37 @@ vector<vector<int>> build_B(predicates& P,int size){
 
 // MUDAR OS ATTS DE <STRING,INT> PARA <INT,STRING>
 
-
+int tpid(int x,int y){
+  return ((r*x)+y);
+}
 map<int,vector<int>> build_T(predicates& P,predicates_index& PI,map<int,clusters_c> plis_c,map<int,clusters_n> plis_n){
-  int op;
+  int p;
   map<int,vector<int>> T;
   for(auto& [att,cluster]:plis_c){
+    vector<int> t;
+    p=PI[{0,{att,att}}];
     for(auto& [element,ids]:cluster){
-      vector<int> t;
       for(int i=0;i<ids.size();++i){
-        for(int j=i+1;j<ids.size();++j){
+        for(int j=0;j<ids.size();++j){
+          if(i!=j){
+            int x = tpid(ids[i],ids[j]);
+            cout << x << " = " << r <<" * "<<ids[i] << " + " << ids[j]<<endl;
+            t.push_back(tpid(ids[i],ids[j]));
+          }
         }
       }
     }
-    
+    T[p]= t;
   }
 
-  // if(op == 0 || op == 4 ){ // = || >
-  //   eahead.push_back(i);
-  // } 
+  for (auto& [p,t]:T){
+    for (auto& tpid:t)
+    {
+      cout << tpid << " = " << P[p].second.first << " " << P[p].first << " "<< P[p].second.second <<endl;
+    }
+    
+  }
+  return T;  
 
 
 }
@@ -124,7 +139,6 @@ map<string,vector<string>> build_table(string table_file){
     string line;
     vector<string> headers;    
     map<string, vector<string>> data;  
-
     if (getline(file, line)) {
         stringstream headerStream(line);
         string header;
@@ -142,6 +156,7 @@ map<string,vector<string>> build_table(string table_file){
             }
             i++;
         }
+        r++;
     }
     file.close();
     return data;
@@ -195,12 +210,14 @@ int main (int argc, char *argv[]) {
       att_type[att]=1;
     }
   }
-
+  for(auto& [a,id]:atts){
+      cout<< a<<","<<id<<endl;
+  }
   gen_predicates(att_type,atts,P,PI);
   data = build_table("table.csv");
   build_pli(att_type,atts,plis_c,plis_n,data);
-  // B = build_B(P,att_n.size()+att_c.size());
-  // T = build_T(P,PI,plis_c,plis_n);
-  print_all(B,P,plis_n,plis_c);
+  B = build_B(P,atts.size());
+  T = build_T(P,PI,plis_c,plis_n);
+  // print_all(B,P,plis_n,plis_c);
   return 0;
 }
