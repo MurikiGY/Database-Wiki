@@ -13,7 +13,7 @@ debug: CFLAGS += -DDEBUG -g
 debug: all
 
 run: all
-	./$(TARGET)
+	./$(TARGET) < ./inputs/teste1.in
 
 clean:
 	-rm -f ./sources/*.o vgcore* 

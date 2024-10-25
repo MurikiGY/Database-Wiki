@@ -1,46 +1,64 @@
-#include<bits/stdc++.h>
-#include <cstdio>
-#include<vector>
+#include <bits/stdc++.h>
+#include <cmath>
+#include <vector>
 
 using namespace std;
 
 typedef struct node{
-  u_int N;
+  int N;
   vector<int> finger_table;
   vector<int> key_table;
 } node_t;
 
-int insert_node(vector<node_t>& ring, int N) {
-    // Check for duplicates
-    for (auto& i: ring) 
-      if (i.N == N) { return 1; }
+void update_finger_table(vector<node_t>& ring){
+  // Hashkey: (N+2^(k-1)) mod 2^m
+  int m = ceil(log2(ring.back().N));
 
-    node_t new_node; new_node.N = N;
-    // Find the position to insert
-    auto it = std::lower_bound(ring.begin(), ring.end(), new_node, 
-        [](const node_t& a, const node_t& b) {
-            return a.N < b.N;
-        });
-
-    // Insert the new node at the found position
-    ring.insert(it, new_node);
-
-    // TODO: Atualizar finger tables
-
-    // TODO: Reatribuir os dados
-
-    return 0;
+  for (auto& i: ring){
+    i.finger_table.clear();
+    for (int k=1; k<=m ;k++){
+      int pow_k = 1 << (k-1), pow_m = 1 << m;
+      int hash = (i.N + pow_k) % pow_m;
+      i.finger_table.push_back(hash);
+    }
+  }
 }
 
-int remove_node(vector<node_t> &ring_net, int N){
+int insert_node(vector<node_t>& ring, int N) {
+  // Check for duplicates
+  for (auto& i: ring) 
+    if (i.N == N) { return 1; }
 
-  // Busca node
-  
+  node_t new_node; new_node.N = N;
+  // Find the position to insert
+  auto it = lower_bound(ring.begin(), ring.end(), new_node, 
+      [](const node_t& a, const node_t& b) {
+      return a.N < b.N;
+      });
+
+  // Insert new node sorted
+  ring.insert(it, new_node);
+
+  // Update finger tables
+  update_finger_table(ring);
+
+  // TODO: Redistribute data
+
+  return 0;
+}
+
+int remove_node(vector<node_t> &ring, int N){
+
+  // TODO: Redistribute node data
+
   // Remove node
+  auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node) {
+      return node.N == N;
+      });
+  ring.erase(it);
 
-  // Atualiza finger tables
-  
-  // TODO: Redistribuir os dados
+  // Update finger tables
+  update_finger_table(ring);
 
   return 0;
 }
@@ -55,15 +73,16 @@ int lookup_data(vector<node_t> ring_net){
   return 0;
 }
 
-void print_nodes(vector<node_t> ring_net){
-  cout << endl << " NODE RING ----- " << ring_net.size() << endl;
-  for (auto i:ring_net){
+void print_nodes(vector<node_t> ring){
+  cout << endl << " NODE RING ----- " << ring.size() << endl;
+  for (auto i:ring){
     cout << "    Node: " << i.N << endl;
 
     cout << "    Finger table {";
     for (auto j:i.finger_table){ cout << j << ", "; }
+    cout << "}" << endl;
 
-    cout << "}" << endl << "    Key table {";
+    cout << "    Key table {";
     for (auto k:i.key_table){ cout << k << ", "; }
     cout << "}" << endl;
   }
@@ -77,12 +96,12 @@ int main (int argc, char *argv[]) {
   int Nid = 0, data = 0;
 
   while (scanf("%d %c %d", &timestamp, &cmd, &Nid) != EOF) {
+    print_nodes(ring_net);
     switch (cmd) {
       case 'E':
         scanf(" %c", &dummy);
         //cout << "Insert node: " << node <<  endl;
         insert_node(ring_net, Nid);
-        print_nodes(ring_net);
         break;
 
       case 'S':
@@ -108,6 +127,6 @@ int main (int argc, char *argv[]) {
         exit(1);
     }
   }
-  
+
   return 0;
 }
