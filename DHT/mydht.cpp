@@ -11,9 +11,10 @@ typedef struct node{
 } node_t;
 
 void update_finger_table(vector<node_t>& ring){
-  // Hashkey: (N+2^(k-1)) mod 2^m
+  // Find ring m from max value
   int m = ceil(log2(ring.back().N));
 
+  // Hashkey: (N+2^(k-1)) mod 2^m
   for (auto& i: ring){
     i.finger_table.clear();
     for (int k=1; k<=m ;k++){
@@ -42,14 +43,15 @@ int insert_node(vector<node_t>& ring, int N) {
   // Update finger tables
   update_finger_table(ring);
 
-  // TODO: Redistribute data
+  // TODO: Redistribute part of the data
+  // from the next node to the atual node
 
   return 0;
 }
 
 int remove_node(vector<node_t> &ring, int N){
 
-  // TODO: Redistribute node data
+  // TODO: Redistribute node data to the next node
 
   // Remove node
   auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node) {
@@ -63,12 +65,27 @@ int remove_node(vector<node_t> &ring, int N){
   return 0;
 }
 
-int insert_data(vector<node_t> ring_net){
+int insert_data(vector<node_t> ring, int N, int key){
+  // Check if the node exists
+  auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node) {
+      return node.N == N;
+      });
+  if (it == ring.end()) { return 1; }
+
+  // Search for the node to insert key
+  int loop = 0;
+  while (key > it->N || loop) {
+    for (auto& jt: it->finger_table)
+      if (key < jt) { break; }
+  }
+
+  it->finger_table.push_back(key);
+  sort(it->finger_table.begin(), it->finger_table.end());
 
   return 0;
 }
 
-int lookup_data(vector<node_t> ring_net){
+int lookup_data(vector<node_t> ring, int N, int key){
 
   return 0;
 }
@@ -93,33 +110,29 @@ int main (int argc, char *argv[]) {
   vector<node_t> ring_net;
   int timestamp = 0;
   char cmd = 0, dummy = 0;
-  int Nid = 0, data = 0;
+  int Nid = 0, key = 0;
 
   while (scanf("%d %c %d", &timestamp, &cmd, &Nid) != EOF) {
-    print_nodes(ring_net);
+    //print_nodes(ring_net);
     switch (cmd) {
       case 'E':
         scanf(" %c", &dummy);
-        //cout << "Insert node: " << node <<  endl;
         insert_node(ring_net, Nid);
         break;
 
       case 'S':
         scanf(" %c", &dummy);
-        //cout << "Remove node: " << node << endl;
         remove_node(ring_net, Nid);
         break;
 
       case 'I':
-        scanf("%d", &data);
-        //cout << "Insert in node " << node << " the data " << data << endl;
-        insert_data(ring_net);
+        scanf("%d", &key);
+        insert_data(ring_net, Nid, key);
         break;
 
       case 'L':
-        scanf("%d", &data);
-        //cout << "Lookup in node " << node << " for data " << data << endl;
-        lookup_data(ring_net);
+        scanf("%d", &key);
+        lookup_data(ring_net, Nid, key);
         break;
 
       default:
