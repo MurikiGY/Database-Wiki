@@ -14,23 +14,34 @@ void update_finger_table(vector<node_t>& ring){
   // Find ring m from max value
   int m = ceil(log2(ring.back().N));
 
-  // Hashkey: (N+2^(k-1)) mod 2^m
-  for (auto& i: ring){
-    i.finger_table.clear();
+  for (auto& j: ring){
+    j.finger_table.clear();
     for (int k=1; k<=m ;k++){
-      int pow_k = 1 << (k-1), pow_m = 1 << m;
-      int hash = (i.N + pow_k) % pow_m;
-      i.finger_table.push_back(hash);
+      int pow_k = 1 << (k-1), pow_m = 1 << m; // 2^(k-1) and 2^m
+      int hash = (j.N + pow_k) % pow_m;       // Hashkey: (N+2^(k-1)) mod 2^m
+      auto i = ring.begin();
+      for (; hash > i->N ;i++) {
+        if (i == ring.end()) { i = ring.begin(); break; }
+      }
+      j.finger_table.push_back(i->N);
     }
   }
 }
 
+void update_key_table(vector<node_t>& ring){
+
+
+}
+
+
+
+
 int insert_node(vector<node_t>& ring, int N) {
   // Check for duplicates
-  for (auto& i: ring) 
-    if (i.N == N) { return 1; }
+  for (auto& i: ring) if (i.N == N) { return 1; }
 
   node_t new_node; new_node.N = N;
+
   // Find the position to insert
   auto it = lower_bound(ring.begin(), ring.end(), new_node, 
       [](const node_t& a, const node_t& b) {
@@ -51,6 +62,13 @@ int insert_node(vector<node_t>& ring, int N) {
 
 int remove_node(vector<node_t> &ring, int N){
 
+  // Check if there is only one node
+  if (ring.size() == 1) {
+    cout << "Removing the last remaining node" << endl;
+    ring.erase(ring.begin()); 
+    return 0;
+  }
+
   // TODO: Redistribute node data to the next node
 
   // Remove node
@@ -66,21 +84,21 @@ int remove_node(vector<node_t> &ring, int N){
 }
 
 int insert_data(vector<node_t> ring, int N, int key){
-  // Check if the node exists
-  auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node) {
-      return node.N == N;
-      });
-  if (it == ring.end()) { return 1; }
+  //// Check if the node exists
+  //auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node) {
+  //    return node.N == N;
+  //    });
+  //if (it == ring.end()) { return 1; }
 
-  // Search for the node to insert key
-  int loop = 0;
-  while (key > it->N || loop) {
-    for (auto& jt: it->finger_table)
-      if (key < jt) { break; }
-  }
+  //// Search for the node to insert key
+  //int loop = 0;
+  //while (key > it->N || loop) {
+  //  for (auto& jt: it->finger_table)
+  //    if (key < jt) { break; }
+  //}
 
-  it->finger_table.push_back(key);
-  sort(it->finger_table.begin(), it->finger_table.end());
+  //it->finger_table.push_back(key);
+  //sort(it->finger_table.begin(), it->finger_table.end());
 
   return 0;
 }
@@ -113,7 +131,7 @@ int main (int argc, char *argv[]) {
   int Nid = 0, key = 0;
 
   while (scanf("%d %c %d", &timestamp, &cmd, &Nid) != EOF) {
-    //print_nodes(ring_net);
+    print_nodes(ring_net);
     switch (cmd) {
       case 'E':
         scanf(" %c", &dummy);
