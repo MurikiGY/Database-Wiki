@@ -49,13 +49,6 @@ void update_finger_table(vector<node_t>& ring){
 }
 
 
-void update_key_table(vector<node_t>& ring){
-
-
-}
-
-
-
 int insert_node(vector<node_t>& ring, int N){
   // Check for duplicates
   for (auto& i: ring) if (i.N == N) { return 1; }
@@ -96,13 +89,21 @@ int insert_node(vector<node_t>& ring, int N){
 
 
 int remove_node(vector<node_t>& ring, int N){
-
   // Find node
   auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node){
       return node.N == N; });
 
-  // TODO: Redistribute node data to the next node
+  // Redistribute node data to the next node
+  if (ring.size() > 1 && it != ring.end()){
+    auto next = it; next++;
+    if (next == ring.end()){ next = ring.begin(); }
 
+    for (auto i = it->key_table.begin(); i != it->key_table.end(); ){
+      auto pos = lower_bound(next->key_table.begin(), next->key_table.end(), *i);
+      next->key_table.insert(pos, *i);
+      i++;
+    }
+  } else { return 0; }  // Node not found
 
   ring.erase(it);
 
@@ -128,7 +129,7 @@ int insert_data(vector<node_t>& ring, int N, int key){
     }
   }
   auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
-  it->key_table.push_back(key);
+  it->key_table.insert(pos, key);
 
   //// Check if the node exists
   //auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node){
