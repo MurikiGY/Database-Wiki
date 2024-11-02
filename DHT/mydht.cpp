@@ -16,15 +16,21 @@ typedef struct node{
 void print_nodes(vector<node_t> ring){
   cout << endl << " NODE RING ----- " << ring.size() << endl;
   for (auto i:ring){
+    int vec_size = 0;
     cout << "    Node: " << i.N << endl;
 
+    vec_size = i.finger_table.size();
     cout << "    Finger table {";
-    for (auto j:i.finger_table) { cout << j << ", "; }
+    for (int j=0; j<vec_size-1 ;j++) { cout << i.finger_table[j] << ", "; }
+    if (vec_size > 0) { cout << i.finger_table[vec_size-1]; }
     cout << "}" << endl;
 
+    vec_size = i.key_table.size();
     cout << "    Key table {";
-    for (auto k:i.key_table) { cout << k << ", "; }
+    for (int j=0; j<vec_size-1 ;j++) { cout << i.key_table[j] << ", "; }
+    if (vec_size > 0) { cout << i.key_table[vec_size-1]; }
     cout << "}" << endl;
+    cout << "    ---\n";
   }
   cout << " -------------- \n\n";
 }
@@ -40,9 +46,8 @@ void update_finger_table(vector<node_t>& ring){
       int pow_k = 1 << (k-1), pow_m = 1 << m; // 2^(k-1) and 2^m
       int hash = (j.N + pow_k) % pow_m;       // Hashkey: (N+2^(k-1)) mod 2^m
       auto i = ring.begin();
-      for (; hash > i->N ;i++){
-        if (i == ring.end()) { i = ring.begin(); break; }
-      }
+      while (i != ring.end() && hash > i->N) { ++i; }
+      if (i == ring.end()) { i = ring.begin(); }
       j.finger_table.push_back(i->N);
     }
   }
@@ -144,8 +149,51 @@ int insert_data(vector<node_t>& ring, int N, int key){
   return 0;
 }
 
+void print_lookup(vector<node_t> ring, vector<int> lookup_nodes, int key, int timestamp){
+  int vec_size;
+  // Print lookup nodes
+  vec_size = lookup_nodes.size();
+  cout << timestamp << " L " << key << " {";
+  for (int i=0; i<vec_size-1 ;i++) { cout << lookup_nodes[i] << ","; }
+  cout << lookup_nodes[vec_size-1] << "}" << endl;
 
-int lookup_data(vector<node_t> ring, int N, int key){
+  // Print finger tables
+  for (auto i: lookup_nodes){
+    auto it = find_if(ring.begin(), ring.end(), [i](const node_t &node){
+        return node.N == i; });
+    cout << timestamp << " T {";
+    vec_size = it->finger_table.size();
+    for (int i=0; i<vec_size-1 ;i++)
+      cout << it->finger_table[i] << ",";
+    if (vec_size > 0) { cout << it->finger_table[vec_size-1] << "}" << endl; }
+  }
+}
+
+
+int lookup_data(vector<node_t> ring, int N, int key, int timestamp){
+  vector<int> lookup_nodes;
+  int Nit = N;
+
+  while (1){
+    lookup_nodes.push_back(Nit);
+    // Search for node
+    auto it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node){
+        return node.N == Nit; });
+
+    // Search for key
+    auto jt = find(it->key_table.begin(), it->key_table.end(), key);
+
+    // Check if found key
+    if (jt != it->key_table.end()) { 
+      print_lookup(ring, lookup_nodes, key, timestamp); 
+      return 0; 
+    }
+
+    // Jumps to the next node
+    auto kt = lower_bound(it->finger_table.begin(), it->finger_table.end(), key);
+    if (kt == it->finger_table.end()) { Nit = it->finger_table.back(); }
+    else { Nit = *kt; }
+  }
 
   return 0;
 }
@@ -180,7 +228,7 @@ int main (int argc, char *argv[]){
       case 'L':
         scanf("%d", &key);
         cout << "Searching for key " << key << endl;
-        lookup_data(ring, Nid, key);
+        lookup_data(ring, Nid, key, timestamp);
         break;
 
       default:
