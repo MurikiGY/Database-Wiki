@@ -202,7 +202,7 @@ int lookup_data(vector<node_t> ring, int N, int key, int timestamp){
 
     // Jumps to the next node (two pointers logic)
     auto prev_it = it->finger_table.begin(), next_it = next(prev_it);
-    while (next_it!=it->finger_table.end() && Nit<*next_it && key>=*next_it ) {
+    while (next_it!=it->finger_table.end() && Nit<*next_it && key>*next_it) {
       prev_it = next_it;
       next_it++;
     }
