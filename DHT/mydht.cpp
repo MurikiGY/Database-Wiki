@@ -1,19 +1,20 @@
 #include <algorithm>
 #include <bits/stdc++.h>
 #include <cmath>
+#include <iterator>
 #include <vector>
 
 using namespace std;
 
 
-typedef struct node{
+typedef struct node {
   int N;
   vector<int> finger_table;
   vector<int> key_table;
 } node_t;
 
 
-void print_nodes(vector<node_t> ring){
+void print_nodes(vector<node_t> ring) {
   cout << endl << " NODE RING ----- " << ring.size() << endl;
   for (auto i:ring){
     int vec_size = 0;
@@ -36,13 +37,13 @@ void print_nodes(vector<node_t> ring){
 }
 
 
-void update_finger_table(vector<node_t>& ring){
+void update_finger_table(vector<node_t>& ring) {
   // Find ring m from max value
   int m = ceil(log2(ring.back().N));
 
   for (auto& j: ring){
     j.finger_table.clear();
-    for (int k=1; k<=m ;k++){
+    for (int k=1; k<=m ;k++) {
       int pow_k = 1 << (k-1), pow_m = 1 << m; // 2^(k-1) and 2^m
       int hash = (j.N + pow_k) % pow_m;       // Hashkey: (N+2^(k-1)) mod 2^m
       auto i = ring.begin();
@@ -54,7 +55,7 @@ void update_finger_table(vector<node_t>& ring){
 }
 
 
-int insert_node(vector<node_t>& ring, int N){
+int insert_node(vector<node_t>& ring, int N) {
   // Check for duplicates
   for (auto& i: ring) if (i.N == N) { return 1; }
 
@@ -65,22 +66,26 @@ int insert_node(vector<node_t>& ring, int N){
       [](const node_t& a, const node_t& b) { return a.N < b.N; });
 
   // Redistribute data from the next node
-  if (ring.size() > 0){
-    auto jt = it;
-    if (jt == ring.end()) { jt = ring.begin(); }
-
-    for (auto i = jt->key_table.begin(); i != jt->key_table.end(); ){
-      if (*i <= N){
-        new_node.key_table.push_back(*jt->key_table.erase(i));
-      } else { i++; }
-    }
-
-    if (jt == ring.begin())
-      for (auto i = jt->key_table.begin(); i != jt->key_table.end(); ){
-        if (*i > ring.begin()->N){
-          new_node.key_table.push_back(*jt->key_table.erase(i));
+  if (ring.size() > 0) {
+    if (it == ring.end()){ // Insert at end
+      for (auto i = ring.begin()->key_table.begin(); i != ring.begin()->key_table.end(); )
+        if (*i > ring.begin()->N && *i <= N) {
+          new_node.key_table.push_back(*i);
+          ring.begin()->key_table.erase(i);
         } else { i++; }
-      }
+    } else if (it == ring.begin()) { // Insert at start
+      for (auto i = ring.begin()->key_table.begin(); i != ring.begin()->key_table.end(); )
+        if (*i > ring.begin()->N || *i <= N) {
+          new_node.key_table.push_back(*i);
+          ring.begin()->key_table.erase(i);
+        } else { i++; }
+    } else { // Insert at middle
+      for (auto i = it->key_table.begin(); i != it->key_table.end(); )
+        if (*i <= N) {
+          new_node.key_table.push_back(*i);
+          it->key_table.erase(i);
+        } else { i++; }
+    }
   }
 
   // Insert new node sorted
@@ -93,17 +98,18 @@ int insert_node(vector<node_t>& ring, int N){
 }
 
 
-int remove_node(vector<node_t>& ring, int N){
+int remove_node(vector<node_t>& ring, int N) {
   // Find node
-  auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node){
-      return node.N == N; });
+  auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node) {
+      return node.N == N; 
+    });
 
   // Redistribute node data to the next node
-  if (ring.size() > 1 && it != ring.end()){
+  if (ring.size() > 1 && it != ring.end()) {
     auto next = it; next++;
     if (next == ring.end()){ next = ring.begin(); }
 
-    for (auto i = it->key_table.begin(); i != it->key_table.end(); ){
+    for (auto i = it->key_table.begin(); i != it->key_table.end(); ) {
       auto pos = lower_bound(next->key_table.begin(), next->key_table.end(), *i);
       next->key_table.insert(pos, *i);
       i++;
@@ -119,13 +125,13 @@ int remove_node(vector<node_t>& ring, int N){
 }
 
 
-int insert_data(vector<node_t>& ring, int N, int key){
+int insert_data(vector<node_t>& ring, int N, int key) {
   // Check empty ring
   if (ring.size() < 1) { cout << "Error: Trying to insert in a empty ring" << endl; return 1; }
 
   // TODO: Insercao errada, arrumar depois
   auto it = ring.begin();
-  while (key > it->N){ 
+  while (key > it->N) { 
     it++;
     if (it == ring.end()) {
       auto pos = lower_bound(ring.begin()->key_table.begin(), ring.begin()->key_table.end(), key);
@@ -149,8 +155,10 @@ int insert_data(vector<node_t>& ring, int N, int key){
   return 0;
 }
 
+
 void print_lookup(vector<node_t> ring, vector<int> lookup_nodes, int key, int timestamp){
   int vec_size;
+
   // Print lookup nodes
   vec_size = lookup_nodes.size();
   cout << timestamp << " L " << key << " {";
@@ -160,13 +168,15 @@ void print_lookup(vector<node_t> ring, vector<int> lookup_nodes, int key, int ti
   // Print finger tables
   for (auto i: lookup_nodes){
     auto it = find_if(ring.begin(), ring.end(), [i](const node_t &node){
-        return node.N == i; });
-    cout << timestamp << " T {";
+        return node.N == i; 
+      });
+    cout << timestamp << " T "<< it->N << " {";
     vec_size = it->finger_table.size();
     for (int i=0; i<vec_size-1 ;i++)
       cout << it->finger_table[i] << ",";
     if (vec_size > 0) { cout << it->finger_table[vec_size-1] << "}" << endl; }
   }
+
 }
 
 
@@ -174,39 +184,44 @@ int lookup_data(vector<node_t> ring, int N, int key, int timestamp){
   vector<int> lookup_nodes;
   int Nit = N;
 
-  while (1){
+  while (1) {
     lookup_nodes.push_back(Nit);
+
     // Search for node
-    auto it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node){
-        return node.N == Nit; });
+    auto it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node) {
+        return node.N == Nit; 
+      });
 
     // Search for key
     auto jt = find(it->key_table.begin(), it->key_table.end(), key);
 
     // Check if found key
     if (jt != it->key_table.end()) { 
-      print_lookup(ring, lookup_nodes, key, timestamp); 
-      return 0; 
+      print_lookup(ring, lookup_nodes, key, timestamp); return 0; 
     }
 
-    // Jumps to the next node
-    auto kt = lower_bound(it->finger_table.begin(), it->finger_table.end(), key);
-    if (kt == it->finger_table.end()) { Nit = it->finger_table.back(); }
-    else { Nit = *kt; }
+    // Jumps to the next node (two pointers logic)
+    auto prev_it = it->finger_table.begin(), next_it = next(prev_it);
+    while (next_it!=it->finger_table.end() && Nit<*next_it && key>=*next_it ) {
+      prev_it = next_it;
+      next_it++;
+    }
+    if (next_it == it->finger_table.end()){ Nit = *prev_it; }
+    else { Nit = *next_it; }
   }
 
   return 0;
 }
 
 
-int main (int argc, char *argv[]){
+int main (int argc, char *argv[]) {
   vector<node_t> ring;
   int timestamp = 0;
   char cmd = 0, dummy = 0;
   int Nid = 0, key = 0;
 
-  while (scanf("%d %c %d", &timestamp, &cmd, &Nid) != EOF){
-    switch (cmd){
+  while (scanf("%d %c %d", &timestamp, &cmd, &Nid) != EOF) {
+    switch (cmd) {
       case 'E':
         scanf(" %c", &dummy);
         cout << "Inserting node " << Nid << endl;
