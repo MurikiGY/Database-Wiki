@@ -202,14 +202,12 @@ int lookup_key(vector<node_t> ring, int N, int key, int timestamp){
     }
 
     // Jumps to the next node
-    auto prev_it = it->finger_table.begin(), next_it = next(prev_it);
-    while (next_it != it->finger_table.end() && !(
-      Nit < *prev_it ? (Nit < key && key <= *prev_it) : (key <= *prev_it || key > Nit)
-    )) {
-      prev_it = next_it; next_it++;
-    }
-
-    Nit = *prev_it;
+    int M = 1<<it->finger_table.size();;
+    int distance = std::min(M, key) - Nit;
+    int module = (distance + M) % M;
+    int index = std::__lg(module);
+    Nit = it->finger_table[index];
+    //Nit = it->finger_table[std::__lg(((std::min(M, key) - Nit) % M + M) % M)];
   }
 
   return 0;
@@ -226,25 +224,25 @@ int main (int argc, char *argv[]) {
     switch (cmd) {
       case 'E':
         scanf(" %c", &dummy);
-        cout << "Inserting node " << Nid << endl;
+        //cout << "Inserting node " << Nid << endl;
         insert_node(ring, Nid);
         break;
 
       case 'S':
         scanf(" %c", &dummy);
-        cout << "Removing node " << Nid << endl;
+        //cout << "Removing node " << Nid << endl;
         remove_node(ring, Nid);
         break;
 
       case 'I':
         scanf("%d", &key);
-        cout << "Inserting key " << key << endl;
+        //cout << "Inserting key " << key << endl;
         insert_key(ring, Nid, key);
         break;
 
       case 'L':
         scanf("%d", &key);
-        cout << "Searching for key " << key << endl;
+        //cout << "Searching for key " << key << endl;
         lookup_key(ring, Nid, key, timestamp);
         break;
 
@@ -252,7 +250,7 @@ int main (int argc, char *argv[]) {
         //cout << "Input error: Finishing program" << endl;
         exit(1);
     }
-    print_nodes(ring);
+    //print_nodes(ring);
   }
 
   return 0;
