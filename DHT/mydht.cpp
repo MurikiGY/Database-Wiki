@@ -39,7 +39,7 @@ void print_nodes(vector<node_t> ring) {
 
 void update_finger_table(vector<node_t>& ring) {
   // Find ring m from max value
-  int m = ceil(log2(ring.back().N));
+  int m = floor(log2(ring.back().N))+1;
 
   for (auto& j: ring){
     j.finger_table.clear();
@@ -200,14 +200,17 @@ int lookup_data(vector<node_t> ring, int N, int key, int timestamp){
       print_lookup(ring, lookup_nodes, key, timestamp); return 0; 
     }
 
+
     // Jumps to the next node (two pointers logic)
     auto prev_it = it->finger_table.begin(), next_it = next(prev_it);
-    while (next_it!=it->finger_table.end() && Nit<*next_it && key>*next_it) {
-      prev_it = next_it;
-      next_it++;
+
+    while (next_it != it->finger_table.end() && !(
+      Nit < *prev_it ? (Nit < key && key <= *prev_it) : (key <= *prev_it || key > Nit)
+    )) {
+      prev_it = next_it; next_it++;
     }
-    if (next_it == it->finger_table.end()){ Nit = *prev_it; }
-    else { Nit = *next_it; }
+
+    Nit = *prev_it;
   }
 
   return 0;
@@ -224,33 +227,33 @@ int main (int argc, char *argv[]) {
     switch (cmd) {
       case 'E':
         scanf(" %c", &dummy);
-        cout << "Inserting node " << Nid << endl;
+        //cout << "Inserting node " << Nid << endl;
         insert_node(ring, Nid);
         break;
 
       case 'S':
         scanf(" %c", &dummy);
-        cout << "Removing node " << Nid << endl;
+        //cout << "Removing node " << Nid << endl;
         remove_node(ring, Nid);
         break;
 
       case 'I':
         scanf("%d", &key);
-        cout << "Inserting key " << key << endl;
+        //cout << "Inserting key " << key << endl;
         insert_data(ring, Nid, key);
         break;
 
       case 'L':
         scanf("%d", &key);
-        cout << "Searching for key " << key << endl;
+        //cout << "Searching for key " << key << endl;
         lookup_data(ring, Nid, key, timestamp);
         break;
 
       default:
-        cout << "Input error: Finishing program" << endl;
+        //cout << "Input error: Finishing program" << endl;
         exit(1);
     }
-    print_nodes(ring);
+    // print_nodes(ring);
   }
 
   return 0;
