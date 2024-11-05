@@ -6,13 +6,11 @@
 
 using namespace std;
 
-
 typedef struct node {
   int N;
   vector<int> finger_table;
   vector<int> key_table;
 } node_t;
-
 
 void print_nodes(vector<node_t> ring) {
   cout << endl << " NODE RING ----- " << ring.size() << endl;
@@ -125,31 +123,34 @@ int remove_node(vector<node_t>& ring, int N) {
 }
 
 
-int insert_data(vector<node_t>& ring, int N, int key) {
+int insert_key(vector<node_t>& ring, int N, int key) {
   // Check empty ring
-  if (ring.size() < 1) { cout << "Error: Trying to insert in a empty ring" << endl; return 1; }
+  if (ring.size() < 1) { cerr << "Error: Trying to insert in a empty ring" << endl; return 1; }
 
-  // TODO: Insercao errada, arrumar depois
-  auto it = ring.begin();
-  while (key > it->N) { 
-    it++;
-    if (it == ring.end()) {
-      auto pos = lower_bound(ring.begin()->key_table.begin(), ring.begin()->key_table.end(), key);
-      ring.begin()->key_table.insert(pos, key);
-      return 0;
-    }
-  }
+  //// TODO: Insercao errada, arrumar depois
+  // Find the position to insert
+  auto it = lower_bound(ring.begin(), ring.end(), key, [](const node_t& a, int key) { 
+      return a.N < key; });
+
+  if (it == ring.end()){ it = ring.begin(); }
   auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
   it->key_table.insert(pos, key);
 
-  //// Check if the node exists
-  //auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node){
-  //    return node.N == N; });
-  //if (it == ring.end()) { return 1; }
+  //int Nit = N;
+  //while (1) {
+  //  // Check if this is the node to insert
 
-  //// Search node finger table
-  //for (auto j: it->key_table){
+  //  // If it is -> insert sorted
+  //  if (1) {
+  //    auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
+  //    it->key_table.insert(pos, key);
+  //    return 0;
+  //  }
 
+  //  // If it is not, find next node to try
+
+  //    
+  //  Nit = next_it;
   //}
 
   return 0;
@@ -180,14 +181,14 @@ void print_lookup(vector<node_t> ring, vector<int> lookup_nodes, int key, int ti
 }
 
 
-int lookup_data(vector<node_t> ring, int N, int key, int timestamp){
+int lookup_key(vector<node_t> ring, int N, int key, int timestamp){
   vector<int> lookup_nodes;
   int Nit = N;
 
   while (1) {
     lookup_nodes.push_back(Nit);
 
-    // Search for node
+    // Find node
     auto it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node) {
         return node.N == Nit; 
       });
@@ -200,10 +201,8 @@ int lookup_data(vector<node_t> ring, int N, int key, int timestamp){
       print_lookup(ring, lookup_nodes, key, timestamp); return 0; 
     }
 
-
-    // Jumps to the next node (two pointers logic)
+    // Jumps to the next node
     auto prev_it = it->finger_table.begin(), next_it = next(prev_it);
-
     while (next_it != it->finger_table.end() && !(
       Nit < *prev_it ? (Nit < key && key <= *prev_it) : (key <= *prev_it || key > Nit)
     )) {
@@ -227,33 +226,33 @@ int main (int argc, char *argv[]) {
     switch (cmd) {
       case 'E':
         scanf(" %c", &dummy);
-        //cout << "Inserting node " << Nid << endl;
+        cout << "Inserting node " << Nid << endl;
         insert_node(ring, Nid);
         break;
 
       case 'S':
         scanf(" %c", &dummy);
-        //cout << "Removing node " << Nid << endl;
+        cout << "Removing node " << Nid << endl;
         remove_node(ring, Nid);
         break;
 
       case 'I':
         scanf("%d", &key);
-        //cout << "Inserting key " << key << endl;
-        insert_data(ring, Nid, key);
+        cout << "Inserting key " << key << endl;
+        insert_key(ring, Nid, key);
         break;
 
       case 'L':
         scanf("%d", &key);
-        //cout << "Searching for key " << key << endl;
-        lookup_data(ring, Nid, key, timestamp);
+        cout << "Searching for key " << key << endl;
+        lookup_key(ring, Nid, key, timestamp);
         break;
 
       default:
         //cout << "Input error: Finishing program" << endl;
         exit(1);
     }
-    // print_nodes(ring);
+    print_nodes(ring);
   }
 
   return 0;
