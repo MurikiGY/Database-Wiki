@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <bits/stdc++.h>
 #include <cmath>
-#include <iterator>
 #include <vector>
 
 using namespace std;
@@ -127,31 +126,84 @@ int insert_key(vector<node_t>& ring, int N, int key) {
   // Check empty ring
   if (ring.size() < 1) { cerr << "Error: Trying to insert in a empty ring" << endl; return 1; }
 
-  //// TODO: Insercao errada, arrumar depois
-  // Find the position to insert
-  auto it = lower_bound(ring.begin(), ring.end(), key, [](const node_t& a, int key) { 
-      return a.N < key; });
+  //// Find the position to insert
+  //auto it = lower_bound(ring.begin(), ring.end(), key, [](const node_t& a, int key) { 
+  //    return a.N < key; });
 
-  if (it == ring.end()){ it = ring.begin(); }
-  auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
-  it->key_table.insert(pos, key);
+  //if (it == ring.end()){ it = ring.begin(); }
+  //auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
+  //it->key_table.insert(pos, key);
 
-  //int Nit = N;
-  //while (1) {
-  //  // Check if this is the node to insert
+  // ---
 
-  //  // If it is -> insert sorted
-  //  if (1) {
-  //    auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
-  //    it->key_table.insert(pos, key);
-  //    return 0;
-  //  }
+  bool must_insert = false; // "FLAG" from previous node
+  int Nit = N;
+  while (1) {
+    //cout << "Lookup node " << Nit << endl;
+    // Find node
+    auto it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node) {
+        return node.N == Nit; 
+      });
 
-  //  // If it is not, find next node to try
+    // Check if received a message to insert node
+    if (key == Nit || must_insert || it->finger_table.size() == 0) {
+      auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
+      it->key_table.insert(pos, key);
+      return 0;
+    }
 
-  //    
-  //  Nit = next_it;
-  //}
+    // If it is not, find next node to try
+    // Separate finger table in three cases
+    auto prev_it = it->finger_table.begin(), next_it = prev_it; next_it++;
+
+    if (Nit > it->finger_table[0]) { // Case 1
+      
+      if (key > Nit || key < it->finger_table[0]) { 
+        must_insert = true; 
+        Nit = it->finger_table[0]; 
+      } else {
+        while (next_it != it->finger_table.end() && key > *next_it) {
+          prev_it = next_it; next_it++;
+        }
+        Nit = *prev_it;
+      }
+
+    } else if (it->finger_table[0] > it->finger_table.back()) { // Case 2
+
+      if (key < Nit) {
+        while (*prev_it <= *next_it) {
+          prev_it = next_it; next_it++;
+        }
+        while (key < *next_it) {
+          prev_it = next_it; next_it++;
+        }
+        Nit = *prev_it; 
+      } else if (Nit < key && key <= it->finger_table[0]) {
+        must_insert = true;
+        Nit = it->finger_table[0];
+      } else {
+        while (next_it != it->finger_table.end() && key > *next_it && *prev_it <= *next_it) {
+          prev_it = next_it; next_it++;
+        }
+        Nit = *prev_it;
+      }
+
+    } else { // Case 3
+
+      if (key < Nit) {
+        Nit = it->finger_table.back();
+      } else if (Nit < key && key <= it->finger_table[0]) {
+        must_insert = true;
+        Nit = it->finger_table[0];
+      } else {
+        while (next_it != it->finger_table.end() && key > *next_it) {
+          prev_it = next_it; next_it++;
+        }
+        Nit = *prev_it;
+      }
+
+    }
+  }
 
   return 0;
 }
