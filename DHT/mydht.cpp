@@ -126,6 +126,60 @@ int insert_key(vector<node_t>& ring, int N, int key) {
   // Check empty ring
   if (ring.size() < 1) { cerr << "Error: Trying to insert in a empty ring" << endl; return 1; }
 
+  vector<int> lookup_nodes;
+  int Nit = N;
+
+  // Find node
+  auto it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node) {
+      return node.N == Nit; 
+    });
+  if (it == ring.end()) { return 1; }
+
+  if (key == Nit || ring.size() == 1) {
+    auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
+    it->key_table.insert(pos, key);
+    return 0;
+  }
+
+  while (1) {
+    //cout << "Passing by node " << Nit << endl;
+    lookup_nodes.push_back(Nit);
+
+    // Find node
+    it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node) {
+        return node.N == Nit; 
+      });
+
+    int size = lookup_nodes.size();
+    if (size > 1) {
+      if ( (lookup_nodes[size-2] < key && key <= lookup_nodes[size-1]) ||
+          (lookup_nodes[size-2] > lookup_nodes[size-1] )) {
+        auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
+        it->key_table.insert(pos, key);
+        return 0;
+      }
+    }
+
+    // Jumps to the next node
+    int M = 1 << it->finger_table.size();;
+    Nit = it->finger_table[std::__lg(((std::min(M, key) - Nit) + M) % M)];
+
+#ifdef DEBUG
+    cout << "Lookup: ";
+    for (int i=0; i<(int)lookup_nodes.size() ;i++)
+      cout << lookup_nodes[i] << " ";
+    cout << endl;
+#endif // DEBUG
+
+    // Check for loops
+    if (count(lookup_nodes.begin(), lookup_nodes.end(), Nit) >= 2) {
+      //cout << "Error: loop found in " << Nit << " inserting key " << key << endl;
+      return 1;
+    }
+  }
+
+  // ---
+
   //// Find the position to insert
   //auto it = lower_bound(ring.begin(), ring.end(), key, [](const node_t& a, int key) { 
   //    return a.N < key; });
@@ -135,75 +189,6 @@ int insert_key(vector<node_t>& ring, int N, int key) {
   //it->key_table.insert(pos, key);
 
   // ---
-
-  bool must_insert = false; // "FLAG" from previous node
-  int Nit = N;
-  while (1) {
-    //cout << "Lookup node " << Nit << endl;
-    // Find node
-    auto it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node) {
-        return node.N == Nit; 
-      });
-
-    // Check if received a message to insert node
-    if (key == Nit || must_insert || it->finger_table.size() == 0) {
-      auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
-      it->key_table.insert(pos, key);
-      return 0;
-    }
-
-    // If it is not, find next node to try
-    // Separate finger table in three cases
-    auto prev_it = it->finger_table.begin(), next_it = prev_it; next_it++;
-
-    if (Nit > it->finger_table[0]) { // Case 1
-      
-      if (key > Nit || key < it->finger_table[0]) { 
-        must_insert = true; 
-        Nit = it->finger_table[0]; 
-      } else {
-        while (next_it != it->finger_table.end() && key > *next_it) {
-          prev_it = next_it; next_it++;
-        }
-        Nit = *prev_it;
-      }
-
-    } else if (it->finger_table[0] > it->finger_table.back()) { // Case 2
-
-      if (key < Nit) {
-        while (*prev_it <= *next_it) {
-          prev_it = next_it; next_it++;
-        }
-        while (key < *next_it) {
-          prev_it = next_it; next_it++;
-        }
-        Nit = *prev_it; 
-      } else if (Nit < key && key <= it->finger_table[0]) {
-        must_insert = true;
-        Nit = it->finger_table[0];
-      } else {
-        while (next_it != it->finger_table.end() && key > *next_it && *prev_it <= *next_it) {
-          prev_it = next_it; next_it++;
-        }
-        Nit = *prev_it;
-      }
-
-    } else { // Case 3
-
-      if (key < Nit) {
-        Nit = it->finger_table.back();
-      } else if (Nit < key && key <= it->finger_table[0]) {
-        must_insert = true;
-        Nit = it->finger_table[0];
-      } else {
-        while (next_it != it->finger_table.end() && key > *next_it) {
-          prev_it = next_it; next_it++;
-        }
-        Nit = *prev_it;
-      }
-
-    }
-  }
 
   return 0;
 }
@@ -254,12 +239,14 @@ int lookup_key(vector<node_t> ring, int N, int key, int timestamp){
     }
 
     // Jumps to the next node
-    int M = 1<<it->finger_table.size();;
-    int distance = std::min(M, key) - Nit;
-    int module = (distance + M) % M;
-    int index = std::__lg(module);
-    Nit = it->finger_table[index];
-    //Nit = it->finger_table[std::__lg(((std::min(M, key) - Nit) % M + M) % M)];
+    int M = 1 << it->finger_table.size();;
+    Nit = it->finger_table[std::__lg(((std::min(M, key) - Nit) + M) % M)];
+
+    // Check for loops
+    if (count(lookup_nodes.begin(), lookup_nodes.end(), Nit) >= 2) {
+      //cout << "Error: key " << key << " not found" << endl;
+      return 1;
+    }
   }
 
   return 0;
@@ -276,25 +263,33 @@ int main (int argc, char *argv[]) {
     switch (cmd) {
       case 'E':
         scanf(" %c", &dummy);
-        //cout << "Inserting node " << Nid << endl;
+#ifdef DEBUG
+        cout << "Inserting node " << Nid << endl;
+#endif
         insert_node(ring, Nid);
         break;
 
       case 'S':
         scanf(" %c", &dummy);
-        //cout << "Removing node " << Nid << endl;
+#ifdef DEBUG
+        cout << "Removing node " << Nid << endl;
+#endif
         remove_node(ring, Nid);
         break;
 
       case 'I':
         scanf("%d", &key);
-        //cout << "Inserting key " << key << endl;
+#ifdef DEBUG
+        cout << "Inserting key " << key << endl;
+#endif
         insert_key(ring, Nid, key);
         break;
 
       case 'L':
         scanf("%d", &key);
-        //cout << "Searching for key " << key << endl;
+#ifdef DEBUG
+        cout << "Searching for key " << key << endl;
+#endif
         lookup_key(ring, Nid, key, timestamp);
         break;
 
@@ -302,7 +297,10 @@ int main (int argc, char *argv[]) {
         //cout << "Input error: Finishing program" << endl;
         exit(1);
     }
-    //print_nodes(ring);
+
+#ifdef DEBUG
+    print_nodes(ring);
+#endif
   }
 
   return 0;

@@ -1,5 +1,5 @@
-CC = g++
-CFLAGS = -g -Wall -O2
+CXX = g++
+CXXFLAGS = -Wall -O2
 LDLIBS = -lm
 SRC = $(wildcard ./sources/*.c)
 OBJ = $(SRC:.c=.o)
@@ -9,7 +9,7 @@ all: $(TARGET)
 
 $(TARGET): $(OBJ)
 
-debug: CFLAGS += -DDEBUG -g
+debug: CXXFLAGS += -DDEBUG -g
 debug: all
 
 run: all
