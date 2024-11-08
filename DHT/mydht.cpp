@@ -60,7 +60,9 @@ int insert_node(vector<node_t>& ring, int N) {
 
   // Find the position to insert
   auto it = lower_bound(ring.begin(), ring.end(), new_node, 
-      [](const node_t& a, const node_t& b) { return a.N < b.N; });
+      [](const node_t& a, const node_t& b) { 
+      return a.N < b.N; 
+    });
 
   // Redistribute data from the next node
   if (ring.size() > 0) {
@@ -100,6 +102,7 @@ int remove_node(vector<node_t>& ring, int N) {
   auto it = find_if(ring.begin(), ring.end(), [N](const node_t &node) {
       return node.N == N; 
     });
+  if (it == ring.end()) { return 1; }
 
   // Redistribute node data to the next node
   if (ring.size() > 1 && it != ring.end()) {
