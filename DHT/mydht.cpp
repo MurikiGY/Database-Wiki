@@ -234,6 +234,7 @@ int lookup_key(vector<node_t> ring, int N, int key, int timestamp){
     auto it = find_if(ring.begin(), ring.end(), [Nit](const node_t &node) {
         return node.N == Nit; 
       });
+    if (it == ring.end()) { return 1; }
 
     // Search for key
     auto jt = find(it->key_table.begin(), it->key_table.end(), key);
