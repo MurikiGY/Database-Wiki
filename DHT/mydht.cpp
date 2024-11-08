@@ -142,7 +142,6 @@ int insert_key(vector<node_t>& ring, int N, int key) {
   }
 
   while (1) {
-    //cout << "Passing by node " << Nit << endl;
     lookup_nodes.push_back(Nit);
 
     // Find node
@@ -153,7 +152,8 @@ int insert_key(vector<node_t>& ring, int N, int key) {
     int size = lookup_nodes.size();
     if (size > 1) {
       if ( (lookup_nodes[size-2] < key && key <= lookup_nodes[size-1]) ||
-          (lookup_nodes[size-2] > lookup_nodes[size-1] )) {
+           (lookup_nodes[size-2] >= lookup_nodes[size-1] && key <= lookup_nodes[size-1]) ||
+           (lookup_nodes[size-2] > lookup_nodes[size-1] && key > lookup_nodes[size-2])  ) {
         auto pos = lower_bound(it->key_table.begin(), it->key_table.end(), key);
         it->key_table.insert(pos, key);
         return 0;
@@ -171,11 +171,13 @@ int insert_key(vector<node_t>& ring, int N, int key) {
     cout << endl;
 #endif // DEBUG
 
-    // Check for loops
-    if (count(lookup_nodes.begin(), lookup_nodes.end(), Nit) >= 2) {
-      //cout << "Error: loop found in " << Nit << " inserting key " << key << endl;
-      return 1;
-    }
+//    // Check for loops
+//    if (count(lookup_nodes.begin(), lookup_nodes.end(), Nit) >= 2) {
+//#ifdef DEBUG
+//      cout << "Error: loop found in " << Nit << " inserting key " << key << endl;
+//#endif
+//      return 1;
+//    }
   }
 
   // ---
@@ -244,7 +246,9 @@ int lookup_key(vector<node_t> ring, int N, int key, int timestamp){
 
     // Check for loops
     if (count(lookup_nodes.begin(), lookup_nodes.end(), Nit) >= 2) {
-      //cout << "Error: key " << key << " not found" << endl;
+#ifdef DEBUG
+      cout << "Error: key " << key << " not found" << endl;
+#endif
       return 1;
     }
   }
@@ -280,7 +284,7 @@ int main (int argc, char *argv[]) {
       case 'I':
         scanf("%d", &key);
 #ifdef DEBUG
-        cout << "Inserting key " << key << endl;
+        cout << "Inserting key " << key << " in node " << Nid << endl;
 #endif
         insert_key(ring, Nid, key);
         break;
@@ -288,7 +292,7 @@ int main (int argc, char *argv[]) {
       case 'L':
         scanf("%d", &key);
 #ifdef DEBUG
-        cout << "Searching for key " << key << endl;
+        cout << "Searching for key " << key << " in node " << Nid << endl;
 #endif
         lookup_key(ring, Nid, key, timestamp);
         break;
