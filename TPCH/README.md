@@ -27,7 +27,7 @@ Finalmente com o binario `dbgen` construido, é possivel gerar os dados com:
 
 Com isso os arquivos `<tabela>.tbl` serão criados com os dados a serem inseridos.
 
-Finalmente, teremos a seguinte estrutura:
+Finalmente, teremos a seguinte estrutura:  
 dss.ddl -> Arquivo com as Create Tables para criação das tabelas.  
 *.tbl   -> Arquivos com os dados das tabelas.  
 queries -> Diretório com as consultas.  
