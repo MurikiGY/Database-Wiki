@@ -22,7 +22,7 @@ make -f makefile.suite
 
 Finalmente com o binario `dbgen` construido, é possivel gerar os dados com:
 ```
-./dbgen -S 1 -vf
+./dbgen -s 1 -vf
 ```
 
 Com isso os arquivos `<tabela>.tbl` serão criados com os dados a serem inseridos.
